@@ -1,0 +1,15 @@
+# Go
+/bin/
+/build/
+/dist/
+
+# Wails
+/frontend/dist/
+/frontend/wailsjs/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+*.exe
