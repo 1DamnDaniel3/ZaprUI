@@ -107,7 +107,7 @@ func (a *App) RunBat(id int) error {
 
 // Use for finding all zapret .bat files
 func (a *App) FindBats() map[int]string {
-	return using.FindBats(a.ProjectDir + "/gitrepo")
+	return using.FindBats(a.ProjectDir + "/release")
 }
 
 // Getting sure that ProjectDir created
