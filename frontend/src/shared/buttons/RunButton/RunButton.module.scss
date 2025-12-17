@@ -1,0 +1,72 @@
+@use '../../styles/variables.scss' as vars;
+
+
+.wrapper {
+    transition: vars.$transition-slow;
+
+    &:hover {
+        transform: scale(1.02);
+
+        .top {
+            transform: scale(1.02);
+        }
+    }
+}
+
+.animate {
+    .top {
+        animation: pressDown 0.2s ease-in-out;
+    }
+}
+
+.btn {
+    box-sizing: content-box;
+    position: relative;
+    background-color: vars.$border-color;
+    height: 240px;
+    width: 240px;
+    border: 6px solid grey;
+    border-radius: 20%;
+    cursor: pointer;
+    box-shadow:
+        -15px -50px 75px #ffffff,
+        -15px -25px 40px #ffffff,
+        -50px 0px 75px #ffffff,
+        15px 50px 60px rgba(0, 0, 0, 0.2);
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20%;
+    position: absolute;
+    top: -16px;
+    background-color: vars.$background-color;
+    box-shadow: inset 10px 10px 30px #f8f8f8;
+    height: 240px;
+    width: 240px;
+    z-index: 10;
+    transition: vars.$transition-slow;
+}
+
+.icon {
+    height: 160px;
+    width: 160px;
+}
+
+
+
+@keyframes pressDown {
+    0% {
+        transform: translateY(0px) scale(1.02);
+    }
+
+    50% {
+        transform: translateY(8px) scale(1.02);
+    }
+
+    100% {
+        transform: translateY(0px) scale(1.02);
+    }
+}

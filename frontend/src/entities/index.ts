@@ -1,0 +1,1 @@
+export { BatCard } from './BatCard/ui/BatCard';
