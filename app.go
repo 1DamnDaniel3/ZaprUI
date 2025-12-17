@@ -11,9 +11,9 @@ import (
 
 // App struct
 type App struct {
-	ctx     context.Context
-	WorkDir string
-	Bats    map[int]string
+	ctx        context.Context
+	ProjectDir string
+	Bats       map[int]string
 }
 
 // NewApp creates a new App application struct
@@ -28,28 +28,57 @@ func (a *App) startup(ctx context.Context) {
 
 	// find AppData Path
 	appDir := utils.GetAppDataPath("ZaprUI")
-	a.WorkDir = appDir // push to type
-	// creating WORKDIR in User/AppData/Roaming
+	gitDir := appDir + "/gitrepo"
+	releaseDir := appDir + "/release"
+	a.ProjectDir = appDir // push to type
+
+	// creating ProjectDir in User/AppData/Roaming/
 	if err := ensureAppDir(appDir); err != nil {
-		panic(err)
+		panic(fmt.Errorf("❗error creating app directory in AppData: %w", err))
 	}
+	if err := ensureAppDir(gitDir); err != nil { // временное git repo
+		panic(fmt.Errorf("❗error creating gitrepo directory in project dir: %w", err))
+	}
+	if err := ensureAppDir(releaseDir); err != nil { // release repo
+		panic(fmt.Errorf("❗error creating release dir: %w", err))
+	}
+
 	// fetching GitHub Repo
-	switch updater.IsGitRepo(appDir) {
+	switch updater.IsGitRepo(gitDir) {
 	case true:
-		if err := updater.UpdateRepo(appDir, "main"); err != nil {
-			panic(err)
+		if err := updater.UpdateRepo(gitDir, "main"); err != nil {
+			panic(fmt.Errorf("❗error updating git repo: %w", err))
 		}
 	case false:
-		if err := updater.CloneRepo("https://github.com/Flowseal/zapret-discord-youtube.git", appDir); err != nil {
-			panic(err)
+		if err := updater.CloneRepo("https://github.com/Flowseal/zapret-discord-youtube.git", gitDir); err != nil {
+			panic(fmt.Errorf("❗error with clone repo in gitRepo: %w", err))
 		}
 	}
 
-	a.Bats = using.FindBats(appDir)
+	// fetching ReleaseRepo
+
+	// client := &http.Client{
+	// 	Timeout: 30 * time.Second,
+	// }
+
+	// resp, err := updater.ParceLatestRelease(client)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// updater.DownloadRelease(resp)
+
+	a.Bats = using.FindBats(gitDir)
 }
 
+// Use for run one of zapret .bat files
 func (a *App) RunBat(id int) error {
 	return using.RunBat(a.Bats, id)
+}
+
+// Use for finding all zapret .bat files
+func (a *App) FindBats() map[int]string {
+	return using.FindBats(a.ProjectDir + "/gitrepo")
 }
 
 // Getting sure that ProjectDir created
