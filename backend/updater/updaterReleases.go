@@ -2,8 +2,14 @@ package updater
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type ReleaseResp struct {
@@ -14,17 +20,91 @@ type ReleaseResp struct {
 	} `json:"assets"`
 }
 
-func IsLocalRepo(dir string) bool {
-	return false
+// Downloading latest release of zapret-discord-youtube. dir - folder path to download
+func DownloadReleaseZip(client *http.Client, release *ReleaseResp, dir string) error {
+	url := findZipReleaseURL(release)
+	if url == "" {
+		return fmt.Errorf("empty URL after request")
+	}
+	// request to download
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return fmt.Errorf("download request failed with error: %v", err)
+	}
+
+	// Zipfile from HTTP
+	respZip, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer respZip.Body.Close()
+
+	path := filepath.Join(dir, "zapret.zip")
+
+	// Creating new empty Zipfile
+	out, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer out.Close()
+	io.Copy(out, respZip.Body)
+	return nil
 }
 
+// Finding if version file exist and create it if it don't
+func EnsureVersionFileExist(dir string, release *ReleaseResp) error {
+	path := filepath.Join(dir, "release_version.txt")
+
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		err := os.WriteFile(path, []byte(release.TagName), 0644)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Trying if we have actual version
+func IsLatestVersion(pathToFile string, release *ReleaseResp) (bool, error) {
+	version, err := os.ReadFile(pathToFile)
+	if err != nil {
+		return false, fmt.Errorf("cannot read version file: %w", err)
+	}
+	versionStr := strings.TrimSpace(string(version))
+	return versionStr == release.TagName, nil
+}
+func IsReleaseReady(dir string) (bool, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return false, fmt.Errorf("cannot read release directory: %w", err)
+	}
+
+	return len(entries) > 0, nil
+}
+
+// Make request to releases and asking for URLs of needed files
 func ParceLatestRelease(client *http.Client) (*ReleaseResp, error) {
-	resp, err := client.Get("https://github.com/Flowseal/zapret-discord-youtube/releases/latest")
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/Flowseal/zapret-discord-youtube/releases/latest", nil)
 	if err != nil {
 		return nil, fmt.Errorf("request to `zapret-discord-youtube/releases` fail with error: %v", err)
 	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("User-Agent", "go-client")
+
+	// catching response
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request failed: %v", err)
+	}
 	defer resp.Body.Close()
 
+	// trying bad response
+	if resp.StatusCode != 200 {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("bad response %d: %v", resp.StatusCode, string(body))
+	}
+
+	// decode response in struct
 	var release ReleaseResp
 	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
 		return nil, fmt.Errorf("cant parse resource. error: %v", err)
@@ -33,13 +113,14 @@ func ParceLatestRelease(client *http.Client) (*ReleaseResp, error) {
 	return &release, nil
 }
 
-func DownloadRelease(release *ReleaseResp) error {
-	// var assetsURLs string
+// ==================== local functions ======================
 
-	for i, asset := range release.Assets {
-		fmt.Println(i)
-		fmt.Println(asset.Name)
+// Taking .zip file from release and saving version
+func findZipReleaseURL(release *ReleaseResp) string {
+	for _, asset := range release.Assets {
+		if strings.HasSuffix(asset.Name, ".zip") {
+			return asset.URL
+		}
 	}
-
-	return nil
+	return ""
 }
