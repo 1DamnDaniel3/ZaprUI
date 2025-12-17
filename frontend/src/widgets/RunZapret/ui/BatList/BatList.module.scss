@@ -1,16 +1,34 @@
 @use '../../../../shared/styles/variables.scss' as vars;
+@use '../../../../shared/styles/animations.scss' as anims;
 
 .wrapper {
-    background-color: vars.$surface-color;
+    box-sizing: content-box;
+    background-color: vars.$border-color;
     position: relative;
     display: flex;
     flex-direction: column;
     width: 320px;
+    min-height: 48px;
     height: fit-content;
-    border: 1px solid vars.$border-color;
-    border-radius: vars.$border-radius-md;
+    border: 6px solid grey;
+    border-radius: 32px;
     cursor: pointer;
     z-index: 100;
+
+    transition: vars.$transition-slow;
+    box-shadow:
+        -8px -25px 40px #ffffff,
+        -8px -12px 20px #ffffff,
+        -25px 0px 40px #ffffff,
+        8px 25px 30px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        transform: scale(1.02);
+
+        .top {
+            transform: scale(1.02);
+        }
+    }
 }
 
 .batList {
@@ -22,7 +40,7 @@
     display: flex;
     flex-direction: column;
     border: 1px solid vars.$border-color;
-    border-radius: vars.$border-radius-md;
+    border-radius: 16px;
     box-shadow: vars.$shadow-md;
 
     max-height: 144px;
