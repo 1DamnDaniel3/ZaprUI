@@ -1,0 +1,57 @@
+@use '../../../../shared/styles/variables.scss' as vars;
+
+.wrapper {
+    background-color: vars.$surface-color;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    height: fit-content;
+    border: 1px solid vars.$border-color;
+    border-radius: vars.$border-radius-md;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.batList {
+    background-color: vars.$surface-color;
+    position: absolute;
+    width: 100%;
+    top: calc(100% + vars.$spacing-xxs);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid vars.$border-color;
+    border-radius: vars.$border-radius-md;
+    box-shadow: vars.$shadow-md;
+
+    max-height: 144px;
+
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: vars.$primary-color;
+        border-radius: 4px;
+    }
+
+    z-index: 1000;
+}
+
+.option {
+    padding: vars.$spacing-xs vars.$spacing-sm;
+    border-radius: vars.$border-radius-md;
+    transition: vars.$transition-fast;
+
+    &:hover {
+        background-color: vars.$primary-color;
+    }
+
+    &.selected {
+        background-color: vars.$primary-color;
+        color: vars.$text-color-reversed;
+    }
+}
