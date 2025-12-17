@@ -1,0 +1,15 @@
+@use '../../styles/variables.scss' as vars;
+
+.btn {
+    background-color: vars.$primary-color;
+    height: 32px;
+    width: 320px;
+    border: 1px solid vars.$border-color;
+    border-radius: vars.$border-radius-md;
+    cursor: pointer;
+    box-shadow: vars.$shadow-sm;
+
+    &:hover {
+        filter: brightness(0.8);
+    }
+}
