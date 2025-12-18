@@ -5,12 +5,17 @@
 // Общие SCSS-переменные, если нужно в логике SCSS
 $primary-color: var(--color-primary);
 $primary-color-hover: var(--color-primary-hover);
+
 $accent-color: var(--color-accent);
 $accent-color-hover: var(--color-accent-hover);
+
 $background-color: var(--color-background);
+
 $text-color: var(--color-text);
 $text-color-reversed: var(--color-text-reversed);
+
 $border-color: var(--color-border);
+
 $surface-color: var(--color-surface);
 
 // ================================
@@ -18,20 +23,26 @@ $surface-color: var(--color-surface);
 // ================================
 
 :root {
-    --color-primary: #a7c957;
-    --color-primary-hover: #6a994e;
+    --color-primary: #68ba2e;
+    --color-primary-transparent: #68ba2e66;
+    --color-primary-hover: #377a30;
+    --color-primary-dark: #103012;
+
     --color-accent: #bc4749;
     --color-accent-hover: #84292a;
 
     // Базовые цвета — фон и обрамление
     --color-background: #edebeb; // Общий фон страницы
+    --color-background-primary: #9ece6a; // Общий фон страницы
+    --color-background-primary-bright: #bee98e; // Общий фон страницы
+
     --color-surface: #ffffff; // Цвет поверхностей (например, карточки, модальные окна)
     --color-surface-transparent: #ffffff55; // Цвет поверхностей (например, карточки, модальные окна)
     --color-items: #fcfcfc;
     --color-border: #cccfd4; // Цвет границ и разделителей
 
     // Текст — стили текста в разных состояниях
-    --color-text: #111827; // Основной цвет текста
+    --color-text: #2c403b; // Основной цвет текста
     --color-text-reversed: #f3f4f6; // Основной цвет текста
     --color-muted: #6b7280; // Вторичный/приглушённый текст (например, описание, метки)
     --color-muted-transparent: #11182788; // Вторичный/приглушённый текст (например, описание, метки)
@@ -43,6 +54,16 @@ $surface-color: var(--color-surface);
     --color-error: #ef4444; // Ошибки, предупреждения об ошибке
     --color-warning: #f97316; // Предупреждения
     --color-info: #3b82f6; // Информационные уведомления
+
+    --color-text-success: #0b5d29; // Успешные действия, подтверждения
+    --color-text-error: #5a0b0b; // Ошибки, предупреждения об ошибке
+    --color-text-warning: #4a2307; // Предупреждения
+    --color-text-info: #0a2654; // Информационные уведомления
+
+    --color-success: #22c55e44; // Успешные действия, подтверждения
+    --color-background-error: #ef444444; // Ошибки, предупреждения об ошибке
+    --color-background-warning: #f9731644; // Предупреждения
+    --color-background-info: #3b82f644; // Информационные уведомления
 
     --brightness-hover: 0.8;
     --brightness-active: 0.6;
@@ -185,6 +206,7 @@ $transition-fast: 100ms ease-in-out; // быстрый отклик на hover
 $transition-medium: 150ms ease-in-out; // стандартная анимация
 $transition-slow: 300ms ease-in-out; // плавное появление, модалки
 $transition-very-slow: 600ms ease-in-out; // плавное появление, модалки
+$transition-extra-very-slow: 1200ms ease-in-out; // плавное появление, модалки
 
 
 // ================================
