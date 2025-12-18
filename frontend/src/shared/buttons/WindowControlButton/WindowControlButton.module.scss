@@ -2,6 +2,8 @@
 @use '../../styles/animations.scss' as anims;
 
 .button {
+    -webkit-app-region: no-drag;
+    widows: 0;
     border: none;
     width: 48px;
     height: 32px;

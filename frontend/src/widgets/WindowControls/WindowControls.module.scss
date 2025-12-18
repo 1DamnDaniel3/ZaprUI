@@ -1,8 +1,15 @@
 @use '../../shared/styles/variables.scss' as vars;
 
 .wrapper {
+    -webkit-app-region: drag;
+    widows: 1;
     display: flex;
     width: 100%;
     justify-content: flex-end;
     background-color: vars.$background-color;
+    cursor: grab;
+
+    &:active {
+        cursor: grabbing;
+    }
 }
