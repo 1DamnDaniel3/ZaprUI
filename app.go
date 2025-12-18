@@ -110,7 +110,7 @@ func (a *App) startup(ctx context.Context) {
 	}
 
 	a.Bats = using.FindBats(releaseDir)
-	fmt.Println(using.FindBats(releaseDir))
+	fmt.Println(using.FindBats(releaseDir)[17])
 }
 
 // Getting sure that ProjectDir created
