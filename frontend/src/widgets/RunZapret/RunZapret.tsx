@@ -1,23 +1,43 @@
 import s from './RunZapret.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FindBats, RunBat, KillBat } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
 import { RunButton } from '../../shared/buttons';
 import { selectBatRunning, setBatRunning } from '../../app/model/slice';
+import { DefaultWarning } from '../../shared';
 
 export function RunZapret() {
     const dispatch = useDispatch();
     const batToRun = useSelector(selectChosenBat);
     const batRunning = useSelector(selectBatRunning);
 
+    interface errorInterface {
+        text: string;
+        type: 'info' | 'warning' | 'error';
+    }
+
+    const [error, setError] = useState<errorInterface | null>(null);
+
     function runBat(id: number) {
-        if (batRunning) {
-            KillBat().then(() => dispatch(setBatRunning(false)));
+        if (batToRun.id === -1) {
+            setError({ text: 'Не выбран .bat файл', type: 'warning' });
             return;
         }
-        RunBat(id).then(() => dispatch(setBatRunning(true)));
+        if (batRunning) {
+            KillBat()
+            .then(() => dispatch(setBatRunning(false)))
+            .catch((err) => {
+                setError({ text: `Ошибка при остановке .bat файла`, type: 'error' });
+            });
+            return;
+        }
+        RunBat(id)
+        .then(() => dispatch(setBatRunning(true)))
+        .catch((err) => {
+            setError({ text: `Ошибка при запуске .bat файла`, type: 'error' });
+        });
         return;
     }
 
@@ -35,12 +55,22 @@ export function RunZapret() {
         findBats();
     }, []);
 
+    useEffect(() => {
+        let timeout = setTimeout(() => setError(null), 5000);
+        return () => clearTimeout(timeout);
+    }, [error])
+
+    useEffect(() => {
+        setError(null);
+    }, [batToRun])
+
     const wrapperStyle = {
         backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
     }
 
     return (
         <div className={s.wrapper} style={wrapperStyle}>
+            {error && <DefaultWarning text={error.text} type={error.type} />}
             <BatList />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
         </div>
