@@ -1,17 +1,44 @@
 import s from './RunZapret.module.scss';
-import { useEffect } from 'react';
-import { FindBats, RunBat } from '../../../wailsjs/go/main/App';
+import { useEffect, useRef, useState } from 'react';
+import { FindBats, RunBat, KillBat, OpenURL } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
-import { RunButton } from '../../shared/buttons/RunButton/RunButton';
+import { RunButton } from '../../shared/buttons';
+import { selectBatRunning, setBatRunning } from '../../app/model/slice';
+import { DefaultWarning } from '../../shared';
 
 export function RunZapret() {
     const dispatch = useDispatch();
-    const batToRun = useSelector(selectChosenBat)
+    const batToRun = useSelector(selectChosenBat);
+    const batRunning = useSelector(selectBatRunning);
 
-    function runBat(id: number) {
-        RunBat(id);
+    const wasRunningOnChange = useRef(false);
+
+    interface errorInterface {
+        text: string;
+        type: 'info' | 'warning' | 'error';
+    }
+
+    const [error, setError] = useState<errorInterface | null>(null);
+
+    async function runBat(id: number) {
+        if (id === -1) {
+            setError({ text: 'Не выбран .bat файл', type: 'warning' });
+            return;
+        }
+
+        try {
+            if (batRunning) {
+                await KillBat();
+                dispatch(setBatRunning(false));
+            } else {
+                await RunBat(id);
+                dispatch(setBatRunning(true));
+            }
+        } catch {
+            setError({ text: 'Ошибка при запуске .bat файла', type: 'error' });
+        }
     }
 
     function findBats() {
@@ -24,14 +51,64 @@ export function RunZapret() {
         });
     }
 
+    function handleOpenUrl(url: string) {
+        OpenURL(url);
+    }
+
     useEffect(() => {
         findBats();
     }, []);
 
+    useEffect(() => {
+        let timeout = setTimeout(() => setError(null), 5000);
+        return () => clearTimeout(timeout);
+    }, [error])
+
+    useEffect(() => {
+        if (batToRun.id === -1) return;
+
+        // если в момент смены bat был запущен — запоминаем
+        wasRunningOnChange.current = batRunning;
+
+        if (batRunning) {
+            KillBat()
+                .then(() => {
+                    dispatch(setBatRunning(false));
+                    setError({ text: 'Смена .bat файла...', type: 'info' });
+
+                    // запускаем новый ТОЛЬКО если прошлый был запущен
+                    if (wasRunningOnChange.current) {
+                        return RunBat(batToRun.id);
+                    }
+                })
+                .then(() => {
+                    if (wasRunningOnChange.current) {
+                        dispatch(setBatRunning(true));
+                    }
+                })
+                .catch(() => {
+                    setError({ text: 'Ошибка при смене .bat файла', type: 'error' });
+                });
+        }
+    }, [batToRun.id]);
+
+    const wrapperStyle = {
+        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
+    }
+
+    const footerStyle = {
+        color: batRunning ? 'var(--color-primary-dark)' : undefined,
+    }
+
     return (
-        <div className={s.wrapper}>
+        <div className={s.wrapper} style={wrapperStyle}>
+            {error && <DefaultWarning text={error.text} type={error.type} />}
             <BatList />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
-        </div>
+            <span className={s.footer} style={footerStyle}>
+                Authors: <a className={s.link} onClick={() => handleOpenUrl('https://github.com/1DamnDaniel3')}>1DamnDaniel3</a>
+                , <a className={s.link} onClick={() => handleOpenUrl('https://github.com/Saltein')}>Saltein</a>
+            </span>
+        </div >
     );
 }

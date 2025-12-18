@@ -3,11 +3,25 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 128px;
     background-color: vars.$background-color;
-    height: 100vh;
+    height: calc(100vh - 48px);
 
     padding: vars.$spacing-xl;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+
+    transition: vars.$transition-extra-very-slow;
+}
+
+.footer {
+    color: var(--color-muted);
+}
+
+.link {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        filter: brightness(0.5);
+    }
 }

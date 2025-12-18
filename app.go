@@ -179,3 +179,8 @@ func (a *App) MaximizeWindow() {
 func (a *App) UnmaximizeWindow() {
 	runtime.WindowUnmaximise(a.ctx)
 }
+
+// OpenURL opens the specified URL in the default browser
+func (a *App) OpenURL(url string) {
+	runtime.BrowserOpenURL(a.ctx, url)
+}

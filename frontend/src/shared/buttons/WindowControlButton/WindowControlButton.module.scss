@@ -1,0 +1,27 @@
+@use '../../styles/variables.scss' as vars;
+@use '../../styles/animations.scss' as anims;
+
+.button {
+    -webkit-app-region: no-drag;
+    widows: 0;
+    border: none;
+    width: 48px;
+    height: 48px;
+    background-color: transparent;
+    cursor: pointer;
+    
+    &:hover {
+        .icon {
+            animation: roundShake 0.2s;
+            filter: drop-shadow(1px 1px 2px #00000066) drop-shadow(-2px -1px 2px #ffffff99);
+        }
+    }
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    color: gray;
+    transition: color vars.$transition-very-slow, filter vars.$transition-fast;
+    filter: drop-shadow(0 0 0 #00000000);
+}

@@ -27,6 +27,9 @@ func main() {
 		MaxHeight: 600, // максимальная высота
 
 		Frameless: true,
+		CSSDragProperty: "widows",
+        CSSDragValue:    "1",
+
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

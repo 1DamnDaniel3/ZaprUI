@@ -1,10 +1,11 @@
 import './App.css';
-import { RunZapret } from './widgets';
+import { RunZapret, WindowControls } from './widgets';
 
 function App() {
 
     return (
         <div id="App">
+            <WindowControls />
             <RunZapret />
         </div>
     )

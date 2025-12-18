@@ -1,13 +1,27 @@
 import s from './RunButton.module.scss';
 import AppIcon from '../../../../../build/windows/icon.ico';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectBatRunning } from '../../../app/model/slice';
 
-export function RunButton({ title, onClick, isActive = true }: { title: string, onClick: () => void, isActive?: boolean }) {
+export function RunButton({ onClick }: { title: string, onClick: () => void, isActive?: boolean }) {
     const [animate, setAnimate] = useState(false)
-    
-    const style = {
-        backgroundColor: !isActive ? 'var(--color-border)' : undefined,
-        PointerEvent: !isActive ? 'none' : 'auto',
+
+    const batRunning = useSelector(selectBatRunning);
+
+    const btnStyle = {
+        backgroundColor: batRunning ? 'var(--color-primary-hover)' : undefined,
+        boxShadow: batRunning ?
+            `-5px -16px 26px var(--color-background-primary-bright),
+            -5px -8px 13px var(--color-background-primary-bright),
+            -16px 0px 26px var(--color-background-primary-bright),
+            5px 20px 20px rgba(0, 0, 0, 0.4)` : undefined,
+        borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
+    }
+
+    const topStyle = {
+        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
+        boxShadow: batRunning ? 'none' : undefined,
     }
 
     const handleClick = () => {
@@ -17,9 +31,9 @@ export function RunButton({ title, onClick, isActive = true }: { title: string, 
 
     return (
         <div className={`${s.wrapper} ${animate ? s.animate : ''}`} onClick={handleClick}>
-            <button className={s.btn} onClick={onClick} style={style}>
-                <div className={s.top}>
-                    <img src={AppIcon} className={s.icon} alt="Run Icon" />
+            <button className={s.btn} onClick={onClick} style={btnStyle}>
+                <div className={s.top} style={topStyle}>
+                    <img src={AppIcon} className={`${s.icon} ${batRunning ? s.running : ''}`} alt="Run Icon" />
                 </div>
             </button>
         </div>
