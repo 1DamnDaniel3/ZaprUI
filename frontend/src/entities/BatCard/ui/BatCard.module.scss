@@ -31,3 +31,9 @@
     margin-left: auto;
     color: vars.$text-color;
 }
+
+.running {
+    margin: 0 8px 0 8px;
+    animation: appear 0.5s ease-in;
+    opacity: 0.8;
+}

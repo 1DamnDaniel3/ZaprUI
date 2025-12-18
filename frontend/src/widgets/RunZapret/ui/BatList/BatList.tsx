@@ -45,17 +45,20 @@ export function BatList() {
     return (
         <div className={s.wrapper} onClick={handleClick} ref={listRef} style={wrapperStyle}>
             <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
-            {isOpen && <div className={s.batList}>
-                {foundBats && foundBats.map((bat) => (
-                    <span
-                        key={bat.id + bat.path}
-                        className={`${s.option} ${chosenBat.id === Number(bat.id) ? s.selected : ''}`}
-                        onClick={() => handleChoose(bat)}
-                    >
-                        {bat.path.split('\\').pop()}
-                    </span>
-                ))}
-            </div>}
+
+            {isOpen &&
+                <div className={`${s.batList} ${batRunning ? s.runningList : ''}`}>
+                    {foundBats && foundBats.map((bat) => (
+                        <span
+                            key={bat.id + bat.path}
+                            className={`${s.option} ${chosenBat.id === Number(bat.id) ? s.selected : ''} ${batRunning ? s.runningOption : ''}`}
+                            onClick={() => handleChoose(bat)}
+                        >
+                            {bat.path.split('\\').pop()}
+                        </span>
+                    ))}
+                </div>}
+
         </div>
     );
 }

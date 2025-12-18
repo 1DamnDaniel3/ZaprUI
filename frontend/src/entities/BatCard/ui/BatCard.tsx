@@ -29,6 +29,7 @@ export function BatCard({ id, path, isOpen }: { id: number; path: string; isOpen
     return (
         <div className={`${s.batItem} ${animate ? s.animate : ''}`} onClick={handleClick} style={wrapperStyle}>
             {path ? <span className={s.batPath}>{path.split('\\').pop()}</span> : 'Выбери файл'}
+            {batRunning && <span className={s.running}>работает...</span>}
             <ArrowIcon className={s.icon} style={arrowStyle} />
         </div>
     );
