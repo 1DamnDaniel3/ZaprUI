@@ -4,6 +4,9 @@
 /dist/
 .env
 
+#vscode
+/.vscode
+
 # Wails
 /frontend/dist/
 /frontend/wailsjs/
