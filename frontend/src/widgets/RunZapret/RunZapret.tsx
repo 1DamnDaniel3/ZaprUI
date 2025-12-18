@@ -1,6 +1,6 @@
 import s from './RunZapret.module.scss';
 import { useEffect, useState } from 'react';
-import { FindBats, RunBat, KillBat } from '../../../wailsjs/go/main/App';
+import { FindBats, RunBat, KillBat, OpenURL } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
@@ -27,17 +27,17 @@ export function RunZapret() {
         }
         if (batRunning) {
             KillBat()
-            .then(() => dispatch(setBatRunning(false)))
-            .catch((err) => {
-                setError({ text: `Ошибка при остановке .bat файла`, type: 'error' });
-            });
+                .then(() => dispatch(setBatRunning(false)))
+                .catch((err) => {
+                    setError({ text: `Ошибка при остановке .bat файла`, type: 'error' });
+                });
             return;
         }
         RunBat(id)
-        .then(() => dispatch(setBatRunning(true)))
-        .catch((err) => {
-            setError({ text: `Ошибка при запуске .bat файла`, type: 'error' });
-        });
+            .then(() => dispatch(setBatRunning(true)))
+            .catch((err) => {
+                setError({ text: `Ошибка при запуске .bat файла`, type: 'error' });
+            });
         return;
     }
 
@@ -49,6 +49,10 @@ export function RunZapret() {
             }
             dispatch(setBatFiles(result));
         });
+    }
+
+    function handleOpenUrl(url: string) {
+        OpenURL(url);
     }
 
     useEffect(() => {
@@ -73,6 +77,10 @@ export function RunZapret() {
             {error && <DefaultWarning text={error.text} type={error.type} />}
             <BatList />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
-        </div>
+            <span className={s.footer}>
+                Authors: <a className={s.link} onClick={() => handleOpenUrl('https://github.com/1DamnDaniel3')}>1DamnDaniel3</a>
+                , <a className={s.link} onClick={() => handleOpenUrl('https://github.com/Saltein')}>Saltein</a>
+            </span>
+        </div >
     );
 }

@@ -4,6 +4,7 @@
 
 .wrapper {
     transition: vars.$transition-slow;
+    // margin-bottom: 128px;
 
     &:hover {
         transform: scale(1.02);
@@ -24,8 +25,8 @@
     box-sizing: content-box;
     position: relative;
     background-color: vars.$border-color;
-    height: 240px;
-    width: 240px;
+    height: 180px;
+    width: 180px;
     border: 6px solid grey;
     border-radius: 20%;
     cursor: pointer;
@@ -46,13 +47,13 @@
     top: -16px;
     background-color: vars.$background-color;
     box-shadow: inset 10px 10px 30px #f8f8f8;
-    height: 240px;
-    width: 240px;
+    height: 180px;
+    width: 180px;
     z-index: 10;
     transition: vars.$transition-slow;
 }
 
 .icon {
-    height: 160px;
-    width: 160px;
+    height: 120px;
+    width: 120px;
 }

@@ -3,7 +3,7 @@
 
 .wrapper {
     position: absolute;
-    top: 40px;
+    bottom: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,6 +12,7 @@
     border-radius: $border-radius-md;
     z-index: 1010;
     backdrop-filter: blur(4px);
+    box-shadow: $shadow-lg;
 
     animation: appearDisappear 5000ms ease-in-out;
 }

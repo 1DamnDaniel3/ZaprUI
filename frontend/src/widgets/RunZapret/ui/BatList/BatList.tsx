@@ -44,7 +44,7 @@ export function BatList() {
 
     return (
         <div className={s.wrapper} onClick={handleClick} ref={listRef} style={wrapperStyle}>
-            <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} />
+            <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
             {isOpen && <div className={s.batList}>
                 {foundBats && foundBats.map((bat) => (
                     <span

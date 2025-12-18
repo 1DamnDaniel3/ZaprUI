@@ -13,6 +13,8 @@
     border-radius: 48px;
     top: -8px;
     transition: vars.$transition-slow;
+    color: vars.$text-color;
+    font-weight: 500;
 
     &:hover {
         transform: scale(1.02);
@@ -21,4 +23,11 @@
 
 .animate {
     animation: pressDown 0.2s ease-in-out;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    color: vars.$text-color;
 }
