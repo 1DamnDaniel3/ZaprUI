@@ -150,31 +150,31 @@ func (a *App) WriteFile(name, text string) error {
 -
 */
 // Close app
-func (a *App) CloseWindow(ctx context.Context) {
-	runtime.Quit(ctx)
+func (a *App) CloseWindow() {
+	runtime.Quit(a.ctx)
 }
 
 // Hide window
-func (a *App) WindowHide(ctx context.Context) {
-	runtime.WindowHide(ctx)
+func (a *App) WindowHide() {
+	runtime.WindowHide(a.ctx)
 }
 
 // Show window
-func (a *App) WindowShow(ctx context.Context) {
-	runtime.WindowHide(ctx)
+func (a *App) WindowShow() {
+	runtime.WindowHide(a.ctx)
 }
 
 // Minimize window
-func (a *App) MinimizeWindow(ctx context.Context) {
-	runtime.WindowMinimise(ctx)
+func (a *App) MinimizeWindow() {
+	runtime.WindowMinimise(a.ctx)
 }
 
 // Maximize window
-func (a *App) MaximizeWindow(ctx context.Context) {
-	runtime.WindowMaximise(ctx)
+func (a *App) MaximizeWindow() {
+	runtime.WindowMaximise(a.ctx)
 }
 
 // Unmaximize window
-func (a *App) UnmaximizeWindow(ctx context.Context) {
-	runtime.WindowUnmaximise(ctx)
+func (a *App) UnmaximizeWindow() {
+	runtime.WindowUnmaximise(a.ctx)
 }

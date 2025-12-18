@@ -9,11 +9,11 @@ import { CloseWindow, MinimizeWindow } from '../../../../wailsjs/go/main/App';
 export function WindowControlButton({ type }: { type: 'minimize' | 'maximize' | 'close' }) {
     const handleClick = async () => {
         if (type === 'minimize') {
-            await MinimizeWindow({});
+            await MinimizeWindow();
         } else if (type === 'maximize') {
-            // await MaximizeWindow({});
+            // await MaximizeWindow();
         } else if (type === 'close') {
-            await app.CloseWindow({});
+            await CloseWindow();
         }
     }
 
