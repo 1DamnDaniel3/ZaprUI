@@ -1,17 +1,24 @@
 import s from './RunZapret.module.scss';
 import { useEffect } from 'react';
-import { FindBats, RunBat } from '../../../wailsjs/go/main/App';
+import { FindBats, RunBat, KillBat } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
-import { RunButton } from '../../shared/buttons/RunButton/RunButton';
+import { RunButton } from '../../shared/buttons';
+import { selectBatRunning, setBatRunning } from '../../app/model/slice';
 
 export function RunZapret() {
     const dispatch = useDispatch();
-    const batToRun = useSelector(selectChosenBat)
+    const batToRun = useSelector(selectChosenBat);
+    const batRunning = useSelector(selectBatRunning);
 
     function runBat(id: number) {
-        RunBat(id);
+        if (batRunning) {
+            KillBat().then(() => dispatch(setBatRunning(false)));
+            return;
+        }
+        RunBat(id).then(() => dispatch(setBatRunning(true)));
+        return;
     }
 
     function findBats() {
@@ -28,8 +35,12 @@ export function RunZapret() {
         findBats();
     }, []);
 
+    const wrapperStyle = {
+        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
+    }
+
     return (
-        <div className={s.wrapper}>
+        <div className={s.wrapper} style={wrapperStyle}>
             <BatList />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
         </div>

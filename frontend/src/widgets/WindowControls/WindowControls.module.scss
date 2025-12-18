@@ -12,4 +12,6 @@
     &:active {
         cursor: grabbing;
     }
+
+    transition: vars.$transition-extra-very-slow;
 }

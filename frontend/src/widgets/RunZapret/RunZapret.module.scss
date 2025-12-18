@@ -3,11 +3,13 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 128px;
+    gap: 96px;
     background-color: vars.$background-color;
-    height: 100%;
+    height: calc(100vh - 32px);
 
     padding: vars.$spacing-xl;
     justify-content: center;
     align-items: center;
+
+    transition: vars.$transition-extra-very-slow;
 }

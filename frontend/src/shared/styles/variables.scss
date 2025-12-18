@@ -23,13 +23,18 @@ $surface-color: var(--color-surface);
 // ================================
 
 :root {
-    --color-primary: #a7c957;
-    --color-primary-hover: #6a994e;
+    --color-primary: #68ba2e;
+    --color-primary-hover: #377a30;
+    --color-primary-dark: #103012;
+
     --color-accent: #bc4749;
     --color-accent-hover: #84292a;
 
     // Базовые цвета — фон и обрамление
     --color-background: #edebeb; // Общий фон страницы
+    --color-background-primary: #9ece6a; // Общий фон страницы
+    --color-background-primary-bright: #bee98e; // Общий фон страницы
+
     --color-surface: #ffffff; // Цвет поверхностей (например, карточки, модальные окна)
     --color-surface-transparent: #ffffff55; // Цвет поверхностей (например, карточки, модальные окна)
     --color-items: #fcfcfc;
@@ -190,6 +195,7 @@ $transition-fast: 100ms ease-in-out; // быстрый отклик на hover
 $transition-medium: 150ms ease-in-out; // стандартная анимация
 $transition-slow: 300ms ease-in-out; // плавное появление, модалки
 $transition-very-slow: 600ms ease-in-out; // плавное появление, модалки
+$transition-extra-very-slow: 1200ms ease-in-out; // плавное появление, модалки
 
 
 // ================================

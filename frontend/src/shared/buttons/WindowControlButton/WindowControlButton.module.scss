@@ -13,8 +13,7 @@
     &:hover {
         .icon {
             animation: roundShake 0.2s;
-            filter: drop-shadow(1px 1px 2px #00000066) drop-shadow(-1px -1px 2px #ffffff);
-            color: gray;
+            filter: drop-shadow(1px 1px 2px #00000066) drop-shadow(-2px -1px 2px #ffffff99);
         }
     }
 }
@@ -22,7 +21,7 @@
 .icon {
     width: 20px;
     height: 20px;
-    color: vars.$border-color;
-    transition: vars.$transition-medium;
+    color: gray;
+    transition: color vars.$transition-very-slow, filter vars.$transition-fast;
     filter: drop-shadow(0 0 0 #00000000);
 }
