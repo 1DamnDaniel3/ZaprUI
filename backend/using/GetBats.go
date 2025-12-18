@@ -4,7 +4,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/kolesnikovae/go-winjob"
 )
+
+type BatRunner struct {
+	Cmd *exec.Cmd
+	Job *winjob.JobObject
+}
 
 // Get paths to all bat files in dir in map[int]string
 func FindBats(dir string) map[int]string {
@@ -25,8 +32,26 @@ func FindBats(dir string) map[int]string {
 }
 
 // Running any bat file
-func RunBat(paths map[int]string, id int) error {
+func (r *BatRunner) Run(paths map[int]string, id int) error {
 	batPath := paths[id]
-	cmd := exec.Command("cmd", "/C", batPath)
-	return cmd.Run()
+	r.Cmd = exec.Command("cmd", "/C", batPath)
+
+	job, err := winjob.Start(r.Cmd, winjob.LimitKillOnJobClose)
+	if err != nil {
+		return err
+	}
+	r.Job = job
+
+	return r.Cmd.Wait()
+}
+
+// Kill bat process with all childrens
+func (r *BatRunner) Kill() error {
+	if r.Job != nil {
+		err := r.Job.Terminate()
+		r.Job.Close()
+		r.Job = nil
+		return err
+	}
+	return nil
 }

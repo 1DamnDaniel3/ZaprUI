@@ -14,15 +14,22 @@ import (
 
 // App struct
 type App struct {
-	ctx             context.Context
+	ctx context.Context
+
 	ProjectDir      string
-	Bats            map[int]string
+	Temp            string
+	ReleaseDir      string
 	VersionFilePath string
+
+	Bats   map[int]string
+	Runner *using.BatRunner
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		Runner: &using.BatRunner{},
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -32,15 +39,19 @@ func (a *App) startup(ctx context.Context) {
 
 	// find AppData Path
 	appDir := utils.GetAppDataPath("ZaprUI")
-	gitDir := appDir + "/gitrepo"
+	temp := appDir + "/temp"
 	releaseDir := appDir + "/release"
-	a.ProjectDir = appDir // push to type
+
+	// push dirs to type
+	a.ProjectDir = appDir
+	a.Temp = temp
+	a.ReleaseDir = releaseDir
 
 	// creating ProjectDir in User/AppData/Roaming/
 	if err := ensureAppDir(appDir); err != nil {
 		panic(fmt.Errorf("❗error creating app directory in AppData: %w", err))
 	}
-	if err := ensureAppDir(gitDir); err != nil { // временное git repo
+	if err := ensureAppDir(temp); err != nil { // temp dir for sessions data files
 		panic(fmt.Errorf("❗error creating gitrepo directory in project dir: %w", err))
 	}
 	if err := ensureAppDir(releaseDir); err != nil { // release repo
@@ -89,30 +100,42 @@ func (a *App) startup(ctx context.Context) {
 		if err := updater.DownloadReleaseZip(client, release, a.ProjectDir); err != nil {
 			panic(fmt.Errorf("❗Downloading failed because of: %v", err))
 		}
-	}
-
-	// unpack zip into releaseDir
-	zipPath := filepath.Join(a.ProjectDir, "zapret.zip")
-	if err := utils.Unzip(zipPath, releaseDir); err != nil {
-		panic(fmt.Errorf("❗unzip failed: %v", err))
+		// unpack zip into releaseDir
+		zipPath := filepath.Join(a.ProjectDir, "zapret.zip")
+		if err := utils.Unzip(zipPath, releaseDir); err != nil {
+			panic(fmt.Errorf("❗unzip failed: %v", err))
+		}
 	}
 
 	a.Bats = using.FindBats(releaseDir)
 }
 
+// Getting sure that ProjectDir created
+func ensureAppDir(path string) error {
+	return os.MkdirAll(path, 0755)
+}
+
+// ======================================================= API ==================================================
+
 // Use for run one of zapret .bat files
 func (a *App) RunBat(id int) error {
-	return using.RunBat(a.Bats, id)
+	return a.Runner.Run(a.Bats, id)
+}
+
+// Kill bat process with all childrens
+func (a *App) KillBat() error {
+	return a.Runner.Kill()
 }
 
 // Use for finding all zapret .bat files
 func (a *App) FindBats() map[int]string {
-	return using.FindBats(a.ProjectDir + "/release")
+	return using.FindBats(a.ReleaseDir)
 }
 
-// Getting sure that ProjectDir created
-func ensureAppDir(path string) error {
-	return os.MkdirAll(path, 0755)
+// Use to create and write in empty file. If it not exist it will be created in temp. Use name with extension
+// examle: WriteFile("NewTempFile.json", "{"string": "string"}")
+func (a *App) WriteFile(name, text string) error {
+	return using.WriteFile(a.Temp, name, text)
 }
 
 /*
@@ -124,7 +147,3 @@ func ensureAppDir(path string) error {
 -
 -
 */
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}

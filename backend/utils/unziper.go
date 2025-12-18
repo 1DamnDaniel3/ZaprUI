@@ -9,13 +9,18 @@ import (
 	"strings"
 )
 
+// Unzipping zip
 func Unzip(srcZip, destDir string) error {
+	if _, err := os.Stat(srcZip); err == nil {
+		defer os.Remove(srcZip) // killing old zip
+	}
 	r, err := zip.OpenReader(srcZip)
 	if err != nil {
 		return err
 	}
 	defer r.Close()
 
+	// read file
 	for _, file := range r.File {
 		fpath := filepath.Join(destDir, file.Name)
 
