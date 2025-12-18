@@ -18,8 +18,15 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "zaprUI",
-		Width:  1024,
-		Height: 768,
+		Width:  400,
+		Height: 600,
+
+		MinWidth:  400, // минимальная ширина
+		MaxWidth:  400, // максимальная ширина
+		MinHeight: 600, // минимальная высота
+		MaxHeight: 600, // максимальная высота
+
+		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

@@ -10,6 +10,8 @@ import (
 	"zaprUI/backend/updater"
 	"zaprUI/backend/using"
 	"zaprUI/backend/utils"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -142,8 +144,37 @@ func (a *App) WriteFile(name, text string) error {
 -
 -
 -
--
+=================================== WAIL API ====================================
 -
 -
 -
 */
+// Close app
+func (a *App) CloseWindow(ctx context.Context) {
+	runtime.Quit(ctx)
+}
+
+// Hide window
+func (a *App) WindowHide(ctx context.Context) {
+	runtime.WindowHide(ctx)
+}
+
+// Show window
+func (a *App) WindowShow(ctx context.Context) {
+	runtime.WindowHide(ctx)
+}
+
+// Minimize window
+func (a *App) MinimizeWindow(ctx context.Context) {
+	runtime.WindowMinimise(ctx)
+}
+
+// Maximize window
+func (a *App) MaximizeWindow(ctx context.Context) {
+	runtime.WindowMaximise(ctx)
+}
+
+// Unmaximize window
+func (a *App) UnmaximizeWindow(ctx context.Context) {
+	runtime.WindowUnmaximise(ctx)
+}
