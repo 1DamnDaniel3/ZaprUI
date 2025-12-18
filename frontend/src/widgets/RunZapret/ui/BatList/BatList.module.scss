@@ -15,12 +15,12 @@
     cursor: pointer;
     z-index: 100;
 
-    transition: vars.$transition-slow;
+    transition: background-color vars.$transition-slow, box-shadow vars.$transition-very-slow;
     box-shadow:
-        -8px -25px 40px #ffffff,
-        -8px -12px 20px #ffffff,
-        -25px 0px 40px #ffffff,
-        8px 25px 30px rgba(0, 0, 0, 0.2);
+        -5px -16px 26px #ffffff,
+        -5px -8px 13px #ffffff,
+        -16px 0px 26px #ffffff,
+        5px 20px 20px rgba(0, 0, 0, 0.2);
 
     &:hover {
         transform: scale(1.02);

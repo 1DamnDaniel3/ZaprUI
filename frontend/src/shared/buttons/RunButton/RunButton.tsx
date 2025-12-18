@@ -12,10 +12,10 @@ export function RunButton({ onClick }: { title: string, onClick: () => void, isA
     const btnStyle = {
         backgroundColor: batRunning ? 'var(--color-primary-hover)' : undefined,
         boxShadow: batRunning ?
-            `-15px -50px 75px var(--color-background-primary-bright),
-        -15px -25px 40px var(--color-background-primary-bright),
-        -50px 0px 75px var(--color-background-primary-bright),
-        15px 50px 60px rgba(0, 0, 0, 0.4)` : undefined,
+            `-5px -16px 26px var(--color-background-primary-bright),
+            -5px -8px 13px var(--color-background-primary-bright),
+            -16px 0px 26px var(--color-background-primary-bright),
+            5px 20px 20px rgba(0, 0, 0, 0.4)` : undefined,
         borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
     }
 
@@ -33,7 +33,7 @@ export function RunButton({ onClick }: { title: string, onClick: () => void, isA
         <div className={`${s.wrapper} ${animate ? s.animate : ''}`} onClick={handleClick}>
             <button className={s.btn} onClick={onClick} style={btnStyle}>
                 <div className={s.top} style={topStyle}>
-                    <img src={AppIcon} className={s.icon} alt="Run Icon" />
+                    <img src={AppIcon} className={`${s.icon} ${batRunning ? s.running : ''}`} alt="Run Icon" />
                 </div>
             </button>
         </div>
