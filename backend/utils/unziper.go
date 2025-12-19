@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
 
 // Unzipping zip
 func Unzip(srcZip, destDir string) error {
+	exec.Command("sc", "stop", "WinDivert").Run()
+
 	if _, err := os.Stat(srcZip); err == nil {
 		defer os.Remove(srcZip) // killing old zip
 	}

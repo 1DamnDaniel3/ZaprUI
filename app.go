@@ -102,6 +102,11 @@ func (a *App) startup(ctx context.Context) {
 		if err := updater.DownloadReleaseZip(client, release, a.ProjectDir); err != nil {
 			panic(fmt.Errorf("❗Downloading failed because of: %v", err))
 		}
+
+		if err := updater.CorrectVersionFile(a.ProjectDir, release); err != nil { //  correct version
+			panic(fmt.Errorf("❗version file ensure error: %v", err))
+		}
+
 		// unpack zip into releaseDir
 		zipPath := filepath.Join(a.ProjectDir, "zapret.zip")
 		if err := utils.Unzip(zipPath, releaseDir); err != nil {
@@ -110,7 +115,7 @@ func (a *App) startup(ctx context.Context) {
 	}
 
 	a.Bats = using.FindBats(releaseDir)
-	fmt.Println(using.FindBats(releaseDir)[17])
+	runtime.EventsEmit(a.ctx, "release:ready", a.Bats)
 }
 
 // Getting sure that ProjectDir created

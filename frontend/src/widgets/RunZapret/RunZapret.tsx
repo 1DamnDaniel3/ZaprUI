@@ -25,6 +25,15 @@ export function RunZapret() {
 
     const [error, setError] = useState<errorInterface | null>(null);
 
+    // ВЫЗЫВАЕМ ТОЛЬКО КОГДА Back сигналит
+    function handleBatsEvent() {
+        FindBats().then((bats) => {
+            const result = Object.entries(bats).map(([id, path]) => ({ id, path }));
+            dispatch(setBatFiles(result));
+        });
+    }
+
+
     async function runBat(id: number) {
         if (id === -1) {
             setError({ text: 'Не выбран .bat файл', type: 'warning' });
@@ -61,7 +70,18 @@ export function RunZapret() {
     }
 
     useEffect(() => {
-        findBats();
+        const handler = () => {
+            FindBats().then((bats) => {
+                const result = Object.entries(bats).map(([id, path]) => ({ id, path }));
+                dispatch(setBatFiles(result));
+            });
+        };
+
+        // Подписка на событие backend
+        window.runtime.EventsOn("release:ready", handler);
+
+        // Очистка при демонтировании
+        return () => window.runtime.EventsOff("release:ready", handler);
     }, []);
 
     useEffect(() => {

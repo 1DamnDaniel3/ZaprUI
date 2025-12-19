@@ -8,6 +8,7 @@ import { setChosenBat } from './entities/BatCard/model/slice';
 function App() {
     const dispatch = useDispatch()
 
+
     useEffect(() => {
         ReadFile('properties.json')
             .then((data) => {
