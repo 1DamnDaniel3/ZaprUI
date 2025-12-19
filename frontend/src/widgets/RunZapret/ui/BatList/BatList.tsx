@@ -5,9 +5,13 @@ import { selectBatFiles, selectChosenBat, setChosenBat } from '../../../../entit
 import { useEffect, useRef, useState } from 'react';
 import { BatFile } from '../../../../entities/BatCard/model/interfaces';
 import { selectBatRunning } from '../../../../app/model/slice';
+import { playSound } from '../../../../shared/lib/playSound';
+import openSound from '../../../../shared/assets/sounds/pressing-a-computer-button.mp3'
+import closeSound from '../../../../shared/assets/sounds/unpressing-a-computer-button.mp3'
 
 export function BatList() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [animate, setAnimate] = useState<boolean>(false);
 
     const dispatch = useDispatch();
     const listRef = useRef<HTMLDivElement>(null);
@@ -17,7 +21,18 @@ export function BatList() {
     const batRunning = useSelector(selectBatRunning);
 
     const handleClick = () => {
-        setIsOpen(!isOpen);
+        if (!isOpen) {
+            setIsOpen(true)
+            setAnimate(false)
+            playSound(openSound, 0.3)
+        }
+        else {
+            setAnimate(true)
+            playSound(closeSound, 0.3)
+            setTimeout(() => {
+                setIsOpen(false)
+            }, 280)
+        }
     }
 
     const handleChoose = (bat: BatFile) => {
@@ -38,7 +53,8 @@ export function BatList() {
             `-8px -25px 40px var(--color-background-primary-bright),
         -8px -12px 20px var(--color-background-primary-bright),
         -25px 0px 40px var(--color-background-primary-bright),
-        8px 25px 30px rgba(0, 0, 0, 0.4)` : undefined,
+        8px 25px 30px rgba(0, 0, 0, 0.4),
+        inset 0 -3px 4px #00000033` : undefined,
         borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
     }
 
@@ -47,7 +63,7 @@ export function BatList() {
             <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
 
             {isOpen &&
-                <div className={`${s.batList} ${batRunning ? s.runningList : ''}`}>
+                <div className={`${s.batList} ${batRunning ? s.runningList : ''} ${animate ? s.animate : ''}`}>
                     {foundBats && foundBats.map((bat) => (
                         <span
                             key={bat.id + bat.path}

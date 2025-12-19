@@ -34,7 +34,8 @@
         -5px -16px 26px #ffffff,
         -5px -8px 13px #ffffff,
         -16px 0px 26px #ffffff,
-        5px 20px 20px rgba(0, 0, 0, 0.2);
+        5px 20px 20px rgba(0, 0, 0, 0.2),
+        inset 0px -5px 10px #00000055;
     transition: background-color vars.$transition-slow, box-shadow vars.$transition-very-slow;
 }
 

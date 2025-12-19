@@ -15,7 +15,8 @@ export function RunButton({ onClick }: { title: string, onClick: () => void, isA
             `-5px -16px 26px var(--color-background-primary-bright),
             -5px -8px 13px var(--color-background-primary-bright),
             -16px 0px 26px var(--color-background-primary-bright),
-            5px 20px 20px rgba(0, 0, 0, 0.4)` : undefined,
+            5px 20px 20px rgba(0, 0, 0, 0.4),
+            inset 0px -5px 10px #00000055` : undefined,
         borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
     }
 
