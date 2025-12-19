@@ -8,8 +8,13 @@ import { selectBatRunning } from '../../../../app/model/slice';
 import { playSound } from '../../../../shared/lib/playSound';
 import openSound from '../../../../shared/assets/sounds/pressing-a-computer-button.mp3'
 import closeSound from '../../../../shared/assets/sounds/unpressing-a-computer-button.mp3'
+import { ElementLoader } from '../../../../shared';
 
-export function BatList() {
+interface BatListProps {
+    batsReady?: boolean
+}
+
+export function BatList({ batsReady }: BatListProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [animate, setAnimate] = useState<boolean>(false);
 
@@ -64,15 +69,22 @@ export function BatList() {
 
             {isOpen &&
                 <div className={`${s.batList} ${batRunning ? s.runningList : ''} ${animate ? s.animate : ''}`}>
-                    {foundBats && foundBats.map((bat) => (
-                        <span
-                            key={bat.id + bat.path}
-                            className={`${s.option} ${chosenBat.id === Number(bat.id) ? s.selected : ''} ${batRunning ? s.runningOption : ''}`}
-                            onClick={() => handleChoose(bat)}
-                        >
-                            {bat.path.split('\\').pop()}
-                        </span>
-                    ))}
+                    {foundBats && batsReady
+                        ?
+                        foundBats.map((bat) => (
+                            <span
+                                key={bat.id + bat.path}
+                                className={`${s.option} ${chosenBat.id === Number(bat.id) ? s.selected : ''} ${batRunning ? s.runningOption : ''}`}
+                                onClick={() => handleChoose(bat)}
+                            >
+                                {bat.path.split('\\').pop()}
+                            </span>
+                        ))
+                        :
+                        Array.from({ length: 15 }).map((_, i) => (
+                            <ElementLoader key={i} />
+                        ))
+                    }
                 </div>}
 
         </div>

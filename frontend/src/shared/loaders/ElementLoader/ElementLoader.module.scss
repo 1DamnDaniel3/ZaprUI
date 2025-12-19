@@ -1,0 +1,34 @@
+@use '../../styles/variables.scss' as *;
+@use '../../styles/animations.scss' as *;
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.loader {
+    border-radius: 6px;
+    transition: $transition-fast;
+    width: 100%;
+    height: 16px;
+    margin: 9.5px 16px;
+
+    background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.25) 0%,
+            rgba(0, 0, 0, 0.10) 50%,
+            rgba(0, 0, 0, 0.25) 100%);
+    background-size: 200% 100%;
+    animation: loaderMove 1s ease-in-out infinite;
+}
+
+@keyframes loaderMove {
+    0% {
+        background-position: 200% 50%;
+    }
+    
+    100% {
+        background-position: 0% 50%;
+    }
+}

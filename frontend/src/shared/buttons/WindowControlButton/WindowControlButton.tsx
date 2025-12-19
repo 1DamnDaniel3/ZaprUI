@@ -52,7 +52,7 @@ export function WindowControlButton({ type }: { type: 'minimize' | 'maximize' | 
             {type === 'info' && <InfoIcon className={s.icon} style={iconStyle} />}
             {type === 'info' && infoOpen && <DefaultModal animate={animateClose}>
                 <h2>{aboutInformation.title}</h2>
-                <p>{aboutInformation.text}</p>
+                <p style={{ textAlign: 'left', marginTop: '8px' }}>{aboutInformation.text}</p>
             </DefaultModal>}
         </button>
     )
