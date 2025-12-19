@@ -1,4 +1,6 @@
 export const aboutInformation = {
-    title: 'bla bla title',
-    text: 'bla bla bla bla text'
+    title: 'Добро пожаловать в Zapr UI',
+    text: `Это приложение использует официальный
+    пакет zapret из GitHub и позволяет обходить блокировку youtube и discord без VPN.
+    `
 } 
