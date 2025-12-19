@@ -7,6 +7,9 @@ import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice
 import { RunButton } from '../../shared/buttons';
 import { selectBatRunning, setBatRunning } from '../../app/model/slice';
 import { DefaultWarning } from '../../shared';
+import { playSound } from '../../shared/lib/playSound';
+import runSound from '../../shared/assets/sounds/asdasd.mp3'
+import offSound from '../../shared/assets/sounds/asd.mp3'
 
 export function RunZapret() {
     const dispatch = useDispatch();
@@ -31,9 +34,11 @@ export function RunZapret() {
         try {
             if (batRunning) {
                 await KillBat();
+                playSound(offSound, 0.3)
                 dispatch(setBatRunning(false));
             } else {
                 await RunBat(id);
+                playSound(runSound, 0.2)
                 dispatch(setBatRunning(true));
             }
         } catch {

@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../../app/store';
 import { BatFile } from './interfaces';
+import { WriteFile } from '../../../../wailsjs/go/main/App';
 
 let initialState = {
-    chosenBat: {id: -1, path: ''},
-    batFiles: [] as {id: number, path: string}[]
+    chosenBat: { id: -1, path: '' },
+    batFiles: [] as { id: number, path: string }[]
 }
 
 const chosenBatSlice = createSlice({
@@ -12,7 +13,9 @@ const chosenBatSlice = createSlice({
     initialState,
     reducers: {
         setChosenBat: (state, action) => {
-            state.chosenBat = action.payload;
+            const payload = action.payload;
+            state.chosenBat = payload;
+            WriteFile('properties.json', { chosenBat: payload })
         },
         setBatFiles: (state, action) => {
             const payloadList = action.payload as BatFile[];
@@ -23,10 +26,10 @@ const chosenBatSlice = createSlice({
     }
 });
 
-export const { 
+export const {
     setChosenBat,
     setBatFiles
- } = chosenBatSlice.actions;
+} = chosenBatSlice.actions;
 
 export default chosenBatSlice.reducer;
 
