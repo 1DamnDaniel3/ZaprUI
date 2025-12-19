@@ -26,9 +26,9 @@ func main() {
 		MinHeight: 600, // минимальная высота
 		MaxHeight: 600, // максимальная высота
 
-		Frameless: true,
+		Frameless:       true,
 		CSSDragProperty: "widows",
-        CSSDragValue:    "1",
+		CSSDragValue:    "1",
 
 		AssetServer: &assetserver.Options{
 			Assets: assets,
