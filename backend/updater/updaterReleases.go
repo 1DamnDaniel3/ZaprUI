@@ -20,6 +20,10 @@ type ReleaseResp struct {
 	} `json:"assets"`
 }
 
+const (
+	release = "https://api.github.com/repos/Flowseal/zapret-discord-youtube/releases/latest"
+)
+
 // Downloading latest release of zapret-discord-youtube. dir - folder path to download
 func DownloadReleaseZip(client *http.Client, release *ReleaseResp, dir string) error {
 	url := findZipReleaseURL(release)
@@ -84,7 +88,7 @@ func IsReleaseReady(dir string) (bool, error) {
 
 // Make request to releases and asking for URLs of needed files
 func ParceLatestRelease(client *http.Client) (*ReleaseResp, error) {
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/Flowseal/zapret-discord-youtube/releases/latest", nil)
+	req, err := http.NewRequest("GET", release, nil)
 	if err != nil {
 		return nil, fmt.Errorf("request to `zapret-discord-youtube/releases` fail with error: %v", err)
 	}

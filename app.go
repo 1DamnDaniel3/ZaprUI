@@ -142,7 +142,7 @@ func (a *App) WriteFile(name string, data map[string]interface{}) error {
 }
 
 // Use to read your json files
-func (a *App) ReadFile(path, name string) (map[string]interface{}, error) {
+func (a *App) ReadFile(name string) (map[string]interface{}, error) {
 	return using.ReadFile(a.Temp, name)
 }
 
