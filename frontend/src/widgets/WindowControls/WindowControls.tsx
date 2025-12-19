@@ -12,8 +12,11 @@ export function WindowControls() {
 
     return (
         <div className={s.wrapper} style={wrapperStyle}>
-            <WindowControlButton type="minimize" />
-            <WindowControlButton type="close" />
+            <WindowControlButton type='info' />
+            <div>
+                <WindowControlButton type="minimize" />
+                <WindowControlButton type="close" />
+            </div>
         </div>
     )
 }

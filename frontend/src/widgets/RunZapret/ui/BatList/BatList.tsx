@@ -7,7 +7,8 @@ import { BatFile } from '../../../../entities/BatCard/model/interfaces';
 import { selectBatRunning } from '../../../../app/model/slice';
 
 export function BatList() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [animate, setAnimate] = useState<boolean>(false);
 
     const dispatch = useDispatch();
     const listRef = useRef<HTMLDivElement>(null);
@@ -17,7 +18,16 @@ export function BatList() {
     const batRunning = useSelector(selectBatRunning);
 
     const handleClick = () => {
-        setIsOpen(!isOpen);
+        if (!isOpen) {
+            setIsOpen(true)
+            setAnimate(false)
+        }
+        else {
+            setAnimate(true)
+            setTimeout(() => {
+                setIsOpen(false)
+            }, 280)
+        }
     }
 
     const handleChoose = (bat: BatFile) => {
@@ -47,7 +57,7 @@ export function BatList() {
             <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
 
             {isOpen &&
-                <div className={`${s.batList} ${batRunning ? s.runningList : ''}`}>
+                <div className={`${s.batList} ${batRunning ? s.runningList : ''} ${animate ? s.animate : ''}`}>
                     {foundBats && foundBats.map((bat) => (
                         <span
                             key={bat.id + bat.path}

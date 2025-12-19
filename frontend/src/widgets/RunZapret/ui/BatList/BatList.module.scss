@@ -66,6 +66,13 @@
     }
 
     z-index: 900;
+    interpolate-size: allow-keywords;
+
+    animation: appearList 0.3s ease-in-out;
+
+    &.animate {
+        animation: disappearList 0.3s ease-in-out;
+    }
 }
 
 .option {
@@ -81,7 +88,6 @@
             -3px -8px 7px #ffffff,
             -8px 0 12px #ffffff,
             3px 10px 10px rgba(0, 0, 0, 0.2), vars.$shadow-lg, inset 2px 2px 4px #00000011, inset -2px -2px 4px #ffffff99;
-        margin: 4px 8px;
 
         &.runningOption {
             box-shadow:
