@@ -18,14 +18,15 @@
     .window {
         padding: $spacing-md;
         width: 75%;
-        border-radius: $border-radius-md;
-        box-shadow: $shadow-md;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow-md, inset 4px 4px 4px #ffffff, inset -4px -4px 4px #00000022;
 
         background-color: var(--color-background);
 
         animation: appearTransform 0.2s ease-in;
 
         &.running {
+            box-shadow: $shadow-md, inset 4px 4px 4px var(--color-background-primary-bright), inset -4px -4px 4px #00000022;
             background-color: var(--color-background-primary);
         }
     }

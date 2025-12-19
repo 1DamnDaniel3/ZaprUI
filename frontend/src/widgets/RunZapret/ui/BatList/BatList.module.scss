@@ -20,7 +20,8 @@
         -5px -16px 26px #ffffff,
         -5px -8px 13px #ffffff,
         -16px 0px 26px #ffffff,
-        5px 20px 20px rgba(0, 0, 0, 0.2);
+        5px 20px 20px rgba(0, 0, 0, 0.2),
+        inset 0 -3px 4px #00000033;
 
     &:hover {
         transform: scale(1.02);
