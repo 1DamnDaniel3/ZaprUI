@@ -8,7 +8,7 @@ import { CloseWindow, MinimizeWindow } from '../../../../wailsjs/go/main/App';
 import { useSelector } from 'react-redux';
 import { selectBatRunning } from '../../../app/model/slice';
 import { DefaultModal } from '../../modals/DefaultModal/DefaultModal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { aboutInformation } from '../../const'
 

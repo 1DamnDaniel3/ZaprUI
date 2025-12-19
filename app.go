@@ -136,13 +136,13 @@ func (a *App) FindBats() map[int]string {
 }
 
 // Use to create and write in empty file. If it not exist it will be created in temp. Use name with extension
-// examle: WriteFile("NewTempFile.json", "{"string": "string"}")
+// examle: WriteFile("NewTempFile.json", {"string": "string"})
 func (a *App) WriteFile(name string, data map[string]interface{}) error {
 	return using.WriteFile(a.Temp, name, data)
 }
 
 // Use to read your json files
-func (a *App) ReadFile(path, name string) (map[string]interface{}, error) {
+func (a *App) ReadFile(name string) (map[string]interface{}, error) {
 	return using.ReadFile(a.Temp, name)
 }
 

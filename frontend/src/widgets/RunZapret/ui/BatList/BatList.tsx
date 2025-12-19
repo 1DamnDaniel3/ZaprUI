@@ -5,6 +5,9 @@ import { selectBatFiles, selectChosenBat, setChosenBat } from '../../../../entit
 import { useEffect, useRef, useState } from 'react';
 import { BatFile } from '../../../../entities/BatCard/model/interfaces';
 import { selectBatRunning } from '../../../../app/model/slice';
+import { playSound } from '../../../../shared/lib/playSound';
+import openSound from '../../../../shared/assets/sounds/pressing-a-computer-button.mp3'
+import closeSound from '../../../../shared/assets/sounds/unpressing-a-computer-button.mp3'
 
 export function BatList() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,9 +24,11 @@ export function BatList() {
         if (!isOpen) {
             setIsOpen(true)
             setAnimate(false)
+            playSound(openSound, 0.3)
         }
         else {
             setAnimate(true)
+            playSound(closeSound, 0.3)
             setTimeout(() => {
                 setIsOpen(false)
             }, 280)
