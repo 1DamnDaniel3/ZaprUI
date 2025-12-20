@@ -4,7 +4,7 @@ import MaximizeIcon from '../../assets/icons/maximize.svg?react';
 import CloseIcon from '../../assets/icons/close.svg?react';
 import InfoIcon from '../../assets/icons/information.svg?react';
 
-import { CloseWindow, MinimizeWindow } from '../../../../wailsjs/go/main/App';
+import { CloseWindow, MinimizeWindow, OpenURL } from '../../../../wailsjs/go/main/App';
 import { useSelector } from 'react-redux';
 import { selectBatRunning } from '../../../app/model/slice';
 import { DefaultModal } from '../../modals/DefaultModal/DefaultModal';
@@ -52,7 +52,8 @@ export function WindowControlButton({ type }: { type: 'minimize' | 'maximize' | 
             {type === 'info' && <InfoIcon className={s.icon} style={iconStyle} />}
             {type === 'info' && infoOpen && <DefaultModal animate={animateClose}>
                 <h2>{aboutInformation.title}</h2>
-                <p style={{ textAlign: 'left', marginTop: '8px' }}>{aboutInformation.text}</p>
+                <p style={{ textAlign: 'left', margin: '8px 0 8px 0' }}>{aboutInformation.text}</p>
+                <a className={s.link} onClick={() => { OpenURL('https://github.com/Flowseal/zapret-discord-youtube/releases') }}>Ссылка: zapret-discord-youtube</a>
             </DefaultModal>}
         </button>
     )

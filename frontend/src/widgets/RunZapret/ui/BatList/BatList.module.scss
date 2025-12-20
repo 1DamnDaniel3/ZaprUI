@@ -43,6 +43,8 @@
     flex-direction: column;
     border: 1px solid vars.$border-color;
     border-radius: 24px;
+    padding: 8px 0;
+
     box-shadow:
         vars.$shadow-lg,
         inset 4px 4px 4px #00000011,

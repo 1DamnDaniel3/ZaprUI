@@ -39,7 +39,7 @@ export function RunZapret() {
                 dispatch(setBatRunning(false));
             } else {
                 await RunBat(id);
-                playSound(runSound, 0.2)
+                playSound(runSound, 0.1)
                 dispatch(setBatRunning(true));
             }
         } catch {
