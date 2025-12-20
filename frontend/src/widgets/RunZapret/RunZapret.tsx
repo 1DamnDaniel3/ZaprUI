@@ -12,27 +12,19 @@ import runSound from '../../shared/assets/sounds/asdasd.mp3'
 import offSound from '../../shared/assets/sounds/asd.mp3'
 
 export function RunZapret() {
+    interface errorInterface {
+        text: string;
+        type: 'info' | 'warning' | 'error';
+    }
+
     const dispatch = useDispatch();
     const batToRun = useSelector(selectChosenBat);
     const batRunning = useSelector(selectBatRunning);
 
     const wasRunningOnChange = useRef(false);
 
-    interface errorInterface {
-        text: string;
-        type: 'info' | 'warning' | 'error';
-    }
-
     const [error, setError] = useState<errorInterface | null>(null);
-
-    // ВЫЗЫВАЕМ ТОЛЬКО КОГДА Back сигналит
-    function handleBatsEvent() {
-        FindBats().then((bats) => {
-            const result = Object.entries(bats).map(([id, path]) => ({ id, path }));
-            dispatch(setBatFiles(result));
-        });
-    }
-
+    const [batsReady, setBatsReady] = useState<boolean>(false);
 
     async function runBat(id: number) {
         if (id === -1) {
@@ -55,31 +47,24 @@ export function RunZapret() {
         }
     }
 
-    function findBats() {
-        FindBats().then((bats) => {
-            let result = [];
-            for (const [id, path] of Object.entries(bats)) {
-                result.push({ id: id, path: path });
-            }
-            dispatch(setBatFiles(result));
-        });
-    }
-
     function handleOpenUrl(url: string) {
         OpenURL(url);
     }
 
+    // Подписка на событие backend
     useEffect(() => {
         const handler = () => {
             FindBats().then((bats) => {
                 const result = Object.entries(bats).map(([id, path]) => ({ id, path }));
                 dispatch(setBatFiles(result));
+                setBatsReady(true);
+            }).catch(() => {
+                setBatsReady(false);
+                setError({ text: 'Ошибка загрузки .bat файлов', type: 'error' })
             });
         };
-
         // Подписка на событие backend
         window.runtime.EventsOn("release:ready", handler);
-
         // Очистка при демонтировании
         return () => window.runtime.EventsOff("release:ready", handler);
     }, []);
@@ -91,7 +76,6 @@ export function RunZapret() {
 
     useEffect(() => {
         if (batToRun.id === -1) return;
-
         // если в момент смены bat был запущен — запоминаем
         wasRunningOnChange.current = batRunning;
 
@@ -128,8 +112,9 @@ export function RunZapret() {
     return (
         <div className={s.wrapper} style={wrapperStyle}>
             {error && <DefaultWarning text={error.text} type={error.type} />}
-            <BatList />
+            <BatList batsReady={batsReady} />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
+
             <span className={s.footer} style={footerStyle}>
                 Authors: <a className={s.link} onClick={() => handleOpenUrl('https://github.com/1DamnDaniel3')}>1DamnDaniel3</a>
                 , <a className={s.link} onClick={() => handleOpenUrl('https://github.com/Saltein')}>Saltein</a>
