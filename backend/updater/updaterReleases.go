@@ -70,7 +70,7 @@ func EnsureVersionFileExist(dir string, release *ReleaseResp) error {
 
 // If we have outdated version
 func CorrectVersionFile(dir string, release *ReleaseResp) error {
-	path := filepath.Join(dir, "zaprUI_version.txt")
+	path := filepath.Join(dir, "release_version.txt")
 	err := os.WriteFile(path, []byte(release.TagName), 0644)
 	if err != nil {
 		return err
