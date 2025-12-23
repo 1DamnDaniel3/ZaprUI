@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	logger "zaprUI/backend/Logger"
 	"zaprUI/backend/updater"
 	"zaprUI/backend/using"
 	"zaprUI/backend/utils"
@@ -25,12 +26,25 @@ type App struct {
 
 	Bats   map[int]string
 	Runner *using.BatRunner
+	Logger logger.Logger
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
+
+	// find AppData Path
+	appDir := utils.GetAppDataPath("ZaprUI")
+	temp := appDir + "/temp"
+	releaseDir := appDir + "/release"
+
+	logger := logger.NewLogger(appDir)
+
 	return &App{
-		Runner: &using.BatRunner{},
+		Runner:     &using.BatRunner{},
+		ProjectDir: appDir,
+		Temp:       temp,
+		ReleaseDir: releaseDir,
+		Logger:     *logger,
 	}
 }
 
@@ -39,24 +53,18 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
-	// find AppData Path
-	appDir := utils.GetAppDataPath("ZaprUI")
-	temp := appDir + "/temp"
-	releaseDir := appDir + "/release"
+	// ===========================
 
-	// push dirs to type
-	a.ProjectDir = appDir
-	a.Temp = temp
-	a.ReleaseDir = releaseDir
+	//============================
 
 	// creating ProjectDir in User/AppData/Roaming/
-	if err := ensureAppDir(appDir); err != nil {
+	if err := ensureAppDir(a.ProjectDir); err != nil {
 		panic(fmt.Errorf("❗error creating app directory in AppData: %w", err))
 	}
-	if err := ensureAppDir(temp); err != nil { // temp dir for sessions data files
+	if err := ensureAppDir(a.Temp); err != nil { // temp dir for sessions data files
 		panic(fmt.Errorf("❗error creating gitrepo directory in project dir: %w", err))
 	}
-	if err := ensureAppDir(releaseDir); err != nil { // release repo
+	if err := ensureAppDir(a.ReleaseDir); err != nil { // release repo
 		panic(fmt.Errorf("❗error creating release dir: %w", err))
 	}
 
@@ -80,42 +88,50 @@ func (a *App) startup(ctx context.Context) {
 
 	release, err := updater.ParceLatestRelease(client) // Asking GitHub Releases about latest
 	if err != nil {
+		a.Logger.Error(err)
 		panic(fmt.Errorf("❗error parce latest release: %v", err))
 	}
 	if err := updater.EnsureVersionFileExist(a.ProjectDir, release); err != nil { //  Check VersionFile
+		a.Logger.Error(err)
 		panic(fmt.Errorf("❗version file ensure error: %v", err))
 	}
 	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_version.txt")
 
 	latest, err := updater.IsLatestVersion(a.VersionFilePath, release) // Trying version
 	if err != nil {
+		a.Logger.Error(err)
 		panic(fmt.Errorf("❗failed to check version: %v", err))
 	}
-	ready, err := updater.IsReleaseReady(releaseDir)
+	ready, err := updater.IsReleaseReady(a.ReleaseDir)
 	if err != nil {
-		panic(fmt.Errorf("❗failed to check release files: %v", err))
+		a.Logger.Error(err)
+		fmt.Printf("failed to check release files: %v", err)
 	}
 
 	if latest && ready {
 		fmt.Println("You use actual version!")
 	} else {
 		if err := updater.DownloadReleaseZip(client, release, a.ProjectDir); err != nil {
+			a.Logger.Error(err)
 			panic(fmt.Errorf("❗Downloading failed because of: %v", err))
 		}
 
 		if err := updater.CorrectVersionFile(a.ProjectDir, release); err != nil { //  correct version
+			a.Logger.Error(err)
 			panic(fmt.Errorf("❗version file ensure error: %v", err))
 		}
 
 		// unpack zip into releaseDir
 		zipPath := filepath.Join(a.ProjectDir, "zapret.zip")
-		if err := utils.Unzip(zipPath, releaseDir); err != nil {
+		if err := utils.Unzip(zipPath, a.ReleaseDir); err != nil {
+			a.Logger.Error(err)
 			panic(fmt.Errorf("❗unzip failed: %v", err))
 		}
 	}
 
-	a.Bats = using.FindBats(releaseDir)
+	a.Bats = using.FindBats(a.ReleaseDir)
 	runtime.EventsEmit(a.ctx, "release:ready", a.Bats)
+
 }
 
 // Getting sure that ProjectDir created
@@ -140,6 +156,8 @@ func (a *App) FindBats() map[int]string {
 	return using.FindBats(a.ReleaseDir)
 }
 
+// =========== temp api ===============
+
 // Use to create and write in empty file. If it not exist it will be created in temp. Use name with extension
 // examle: WriteFile("NewTempFile.json", {"string": "string"})
 func (a *App) WriteFile(name string, data map[string]interface{}) error {
@@ -149,6 +167,16 @@ func (a *App) WriteFile(name string, data map[string]interface{}) error {
 // Use to read your json files
 func (a *App) ReadFile(name string) (map[string]interface{}, error) {
 	return using.ReadFile(a.Temp, name)
+}
+
+// =============== version api =============
+
+func (a *App) GetZaprUIVersion() (string, error) {
+	return using.GetVersion(a.ProjectDir, "zaprUI_version.txt")
+}
+
+func (a *App) GetZapretVersion() (string, error) {
+	return using.GetVersion(a.ProjectDir, "release_version.txt")
 }
 
 /*
@@ -167,12 +195,14 @@ func (a *App) CloseWindow() {
 
 // Hide window
 func (a *App) WindowHide() {
+	runTray(a.ctx, a.Logger)
 	runtime.WindowHide(a.ctx)
+
 }
 
 // Show window
 func (a *App) WindowShow() {
-	runtime.WindowHide(a.ctx)
+	runtime.WindowShow(a.ctx)
 }
 
 // Minimize window
