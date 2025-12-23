@@ -156,6 +156,16 @@ func (a *App) FindBats() map[int]string {
 	return using.FindBats(a.ReleaseDir)
 }
 
+// Findout ZaprUI version
+func (a *App) GetZaprUIVersion() (string, error) {
+	return using.GetVersion(a.ProjectDir, "zaprUI_version.txt")
+}
+
+// Findout ZaprUI version
+func (a *App) GetZapretVersion() (string, error) {
+	return using.GetVersion(a.ProjectDir, "release_version.txt")
+}
+
 // =========== temp api ===============
 
 // Use to create and write in empty file. If it not exist it will be created in temp. Use name with extension
@@ -167,16 +177,6 @@ func (a *App) WriteFile(name string, data map[string]interface{}) error {
 // Use to read your json files
 func (a *App) ReadFile(name string) (map[string]interface{}, error) {
 	return using.ReadFile(a.Temp, name)
-}
-
-// =============== version api =============
-
-func (a *App) GetZaprUIVersion() (string, error) {
-	return using.GetVersion(a.ProjectDir, "zaprUI_version.txt")
-}
-
-func (a *App) GetZapretVersion() (string, error) {
-	return using.GetVersion(a.ProjectDir, "release_version.txt")
 }
 
 /*

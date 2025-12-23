@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"embed"
-	"os/exec"
 	logger "zaprUI/backend/Logger"
 
 	"github.com/getlantern/systray"
@@ -42,9 +41,12 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 202, G: 210, B: 197, A: 1},
 		OnStartup:        app.startup,
 		OnShutdown: func(ctx context.Context) {
-			exec.Command("sc", "stop", "WinDivert").Run()
 			app.Logger.Info("Shut down")
 		},
+		// OnBeforeClose: func(ctx context.Context) (prevent bool) {
+		// 	exec.Command("sc", "stop", "WinDivert").Run()
+		// 	return false
+		// },
 
 		Bind: []interface{}{
 			app,
@@ -111,3 +113,5 @@ func onReady(ctx context.Context, logger logger.Logger) {
 		}
 	}()
 }
+
+// $env:CGO_ENABLED="1"; wails build -o ./ZaprUI.exe
