@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"embed"
+	logger "zaprUI/backend/Logger"
 
+	"github.com/getlantern/systray"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -26,15 +30,24 @@ func main() {
 		MinHeight: 600, // минимальная высота
 		MaxHeight: 600, // максимальная высота
 
-		Frameless:       true,
-		CSSDragProperty: "widows",
-		CSSDragValue:    "1",
+		Frameless:         true,
+		CSSDragProperty:   "widows",
+		CSSDragValue:      "1",
+		HideWindowOnClose: true,
 
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 202, G: 210, B: 197, A: 1},
 		OnStartup:        app.startup,
+		OnShutdown: func(ctx context.Context) {
+			app.Logger.Info("Shut down")
+		},
+		// OnBeforeClose: func(ctx context.Context) (prevent bool) {
+		// 	exec.Command("sc", "stop", "WinDivert").Run()
+		// 	return false
+		// },
+
 		Bind: []interface{}{
 			app,
 		},
@@ -45,3 +58,60 @@ func main() {
 	}
 
 }
+
+var isTrayRunning bool
+
+// ========== Tray routine =============
+
+func runTray(ctx context.Context, logger logger.Logger) {
+
+	if isTrayRunning {
+		return
+	}
+
+	isTrayRunning = true
+
+	go func() {
+		systray.Run(func() {
+			onReady(ctx, logger)
+		}, func() {})
+	}()
+
+}
+
+func onReady(ctx context.Context, logger logger.Logger) {
+	systray.SetTitle("ZaprUI")
+	systray.SetTooltip("ZaprUI")
+
+	iconBytes, err := assets.ReadFile("frontend/dist/assets/icon.defcbce1.ico")
+	if err != nil {
+		logger.Error(err)
+		panic(err)
+	}
+
+	systray.SetIcon(iconBytes)
+
+	mShow := systray.AddMenuItem("Показать", "Показать окно")
+	mHide := systray.AddMenuItem("Скрыть", "Скрыть окно")
+	systray.AddSeparator()
+	mQuit := systray.AddMenuItem("Выход", "Закрыть приложение")
+
+	go func() {
+		for {
+			select {
+			case <-mShow.ClickedCh:
+				runtime.WindowShow(ctx)
+
+			case <-mHide.ClickedCh:
+				runtime.WindowHide(ctx)
+
+			case <-mQuit.ClickedCh:
+				runtime.Quit(ctx)
+				return
+
+			}
+		}
+	}()
+}
+
+// $env:CGO_ENABLED="1"; wails build -o ./ZaprUI.exe

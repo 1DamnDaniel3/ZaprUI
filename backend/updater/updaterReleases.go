@@ -70,7 +70,7 @@ func EnsureVersionFileExist(dir string, release *ReleaseResp) error {
 
 // If we have outdated version
 func CorrectVersionFile(dir string, release *ReleaseResp) error {
-	path := filepath.Join(dir, "zaprUI_version.txt")
+	path := filepath.Join(dir, "release_version.txt")
 	err := os.WriteFile(path, []byte(release.TagName), 0644)
 	if err != nil {
 		return err
@@ -92,8 +92,25 @@ func IsReleaseReady(dir string) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("cannot read release directory: %w", err)
 	}
+	binFolder, err := os.ReadDir(dir + "/bin")
+	if err != nil {
+		return false, fmt.Errorf("cannot read release directory: %w", err)
+	}
+	batsCount := 0
+	winwsExe := 0
 
-	return len(entries) > 0, nil
+	for _, file := range entries {
+		if strings.HasSuffix(file.Name(), ".bat") {
+			batsCount++
+		}
+	}
+	for _, file := range binFolder {
+		if strings.HasSuffix(file.Name(), ".exe") {
+			winwsExe++
+		}
+	}
+
+	return batsCount > 1 && winwsExe == 1, nil
 }
 
 // Make request to releases and asking for URLs of needed files

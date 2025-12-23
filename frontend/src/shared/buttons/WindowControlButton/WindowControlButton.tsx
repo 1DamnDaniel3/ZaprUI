@@ -4,7 +4,7 @@ import MaximizeIcon from '../../assets/icons/maximize.svg?react';
 import CloseIcon from '../../assets/icons/close.svg?react';
 import InfoIcon from '../../assets/icons/information.svg?react';
 
-import { CloseWindow, MinimizeWindow, OpenURL } from '../../../../wailsjs/go/main/App';
+import { WindowHide, MinimizeWindow, OpenURL } from '../../../../wailsjs/go/main/App';
 import { useSelector } from 'react-redux';
 import { selectBatRunning } from '../../../app/model/slice';
 import { DefaultModal } from '../../modals/DefaultModal/DefaultModal';
@@ -25,7 +25,7 @@ export function WindowControlButton({ type }: { type: 'minimize' | 'maximize' | 
         } else if (type === 'maximize') {
             // await MaximizeWindow();
         } else if (type === 'close') {
-            await CloseWindow();
+            await WindowHide();
         } else if (type === 'info') {
             if (!infoOpen) {
                 setInfoOpen(true)
