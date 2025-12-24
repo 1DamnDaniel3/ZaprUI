@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectBatFiles, selectChosenBat, setChosenBat } from '../../../../entities/BatCard/model/slice';
 import { useEffect, useRef, useState } from 'react';
 import { BatFile } from '../../../../entities/BatCard/model/interfaces';
-import { selectBatRunning } from '../../../../app/model/slice';
+import { selectBatRunning, selectSoundSwitch } from '../../../../app/model/slice';
 import { playSound } from '../../../../shared/lib/playSound';
+import { ElementLoader } from '../../../../shared';
+
 import openSound from '../../../../shared/assets/sounds/pressing-a-computer-button.mp3'
 import closeSound from '../../../../shared/assets/sounds/unpressing-a-computer-button.mp3'
-import { ElementLoader } from '../../../../shared';
 
 interface BatListProps {
     batsReady?: boolean
@@ -24,16 +25,17 @@ export function BatList({ batsReady }: BatListProps) {
     const chosenBat = useSelector(selectChosenBat);
     const foundBats = useSelector(selectBatFiles);
     const batRunning = useSelector(selectBatRunning);
+    const soundState = useSelector(selectSoundSwitch);
 
     const handleClick = () => {
         if (!isOpen) {
             setIsOpen(true)
             setAnimate(false)
-            playSound(openSound, 0.3)
+            playSound(openSound, 0.3, soundState)
         }
         else {
             setAnimate(true)
-            playSound(closeSound, 0.3)
+            playSound(closeSound, 0.3, soundState)
             setTimeout(() => {
                 setIsOpen(false)
             }, 280)

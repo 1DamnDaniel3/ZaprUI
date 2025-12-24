@@ -19,9 +19,10 @@ const chosenBatSlice = createSlice({
         },
         setBatFiles: (state, action) => {
             const payloadList = action.payload as BatFile[];
-            state.batFiles = payloadList.filter((item) => {
-                return !item.path.split('\\').pop()?.includes('service');
-            })
+            state.batFiles = payloadList
+            // state.batFiles = payloadList.filter((item) => {
+            //     return !item.path.split('\\').pop()?.includes('service');
+            // })
         }
     }
 });

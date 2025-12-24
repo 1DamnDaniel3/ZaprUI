@@ -5,7 +5,7 @@ import { BatList } from './ui/BatList/BatList';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
 import { RunButton } from '../../shared/buttons';
-import { selectBatRunning, setBatRunning } from '../../app/model/slice';
+import { selectBatRunning, selectSoundSwitch, setBatRunning } from '../../app/model/slice';
 import { DefaultWarning } from '../../shared';
 import { playSound } from '../../shared/lib/playSound';
 import runSound from '../../shared/assets/sounds/asdasd.mp3'
@@ -20,6 +20,7 @@ export function RunZapret() {
     const dispatch = useDispatch();
     const batToRun = useSelector(selectChosenBat);
     const batRunning = useSelector(selectBatRunning);
+    const soundState = useSelector(selectSoundSwitch);
 
     const wasRunningOnChange = useRef(false);
 
@@ -35,11 +36,11 @@ export function RunZapret() {
         try {
             if (batRunning) {
                 await KillBat();
-                playSound(offSound, 0.3)
+                playSound(offSound, 0.3, soundState)
                 dispatch(setBatRunning(false));
             } else {
                 await RunBat(id);
-                playSound(runSound, 0.2)
+                playSound(runSound, 0.1, soundState)
                 dispatch(setBatRunning(true));
             }
         } catch {
