@@ -1,0 +1,26 @@
+@use '../../../styles/variables.scss' as *;
+
+.infoDiv {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.infoP {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xxs;
+}
+
+.link {
+    color: var(--color-link);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.versions {
+    display: flex;
+    flex-direction: column;
+    color: var(--color-muted);
+}
