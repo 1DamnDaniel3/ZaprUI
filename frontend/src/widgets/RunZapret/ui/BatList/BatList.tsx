@@ -54,21 +54,10 @@ export function BatList({ batsReady }: BatListProps) {
         })
     }, [])
 
-    const wrapperStyle = {
-        backgroundColor: batRunning ? 'var(--color-primary-hover)' : undefined,
-        boxShadow: batRunning ?
-            `-8px -25px 40px var(--color-background-primary-bright),
-        -8px -12px 20px var(--color-background-primary-bright),
-        -25px 0px 40px var(--color-background-primary-bright),
-        8px 25px 30px rgba(0, 0, 0, 0.4),
-        inset 0 -3px 4px #00000033` : undefined,
-        borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
-    }
 
     return (
-        <div className={s.wrapper} onClick={handleClick} ref={listRef} style={wrapperStyle}>
+        <div className={`${s.wrapper} ${batRunning ? s.wrapperRunning : ''}`} onClick={handleClick} ref={listRef}>
             <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
-
             {isOpen &&
                 <div className={`${s.batList} ${batRunning ? s.runningList : ''} ${animate ? s.animate : ''}`}>
                     {foundBats && batsReady

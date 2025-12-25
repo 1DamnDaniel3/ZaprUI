@@ -2,38 +2,27 @@ import s from './RunButton.module.scss';
 import AppIcon from '../../../../../build/windows/icon.ico';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectBatRunning } from '../../../app/model/slice';
+import { selectBatRunning, selectSoundSwitch, selectTheme } from '../../../app/model/slice';
+import { playSound } from '../../lib/playSound';
+import selectSound from '../../assets/sounds/select.mp3'
+import backSound from '../../assets/sounds/back.mp3'
 
 export function RunButton({ onClick }: { title: string, onClick: () => void, isActive?: boolean }) {
     const [animate, setAnimate] = useState(false)
 
     const batRunning = useSelector(selectBatRunning);
-
-    const btnStyle = {
-        backgroundColor: batRunning ? 'var(--color-primary-hover)' : undefined,
-        boxShadow: batRunning ?
-            `-5px -16px 26px var(--color-background-primary-bright),
-            -5px -8px 13px var(--color-background-primary-bright),
-            -16px 0px 26px var(--color-background-primary-bright),
-            5px 20px 20px rgba(0, 0, 0, 0.4),
-            inset 0px -5px 10px #00000055` : undefined,
-        borderColor: batRunning ? 'var(--color-primary-dark)' : undefined,
-    }
-
-    const topStyle = {
-        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
-        boxShadow: batRunning ? 'none' : undefined,
-    }
+    const soundState = useSelector(selectSoundSwitch)
 
     const handleClick = () => {
+        playSound(batRunning ? backSound : selectSound, 0.1, soundState)
         setAnimate(true);
         setTimeout(() => setAnimate(false), 200);
     }
 
     return (
         <div className={`${s.wrapper} ${animate ? s.animate : ''}`} onClick={handleClick}>
-            <button className={s.btn} onClick={onClick} style={btnStyle}>
-                <div className={s.top} style={topStyle}>
+            <button className={`${s.btn} ${batRunning ? s.running : ''}`} onClick={onClick}>
+                <div className={`${s.top} ${batRunning ? s.running : ''}`}>
                     <img src={AppIcon} className={`${s.icon} ${batRunning ? s.running : ''}`} alt="Run Icon" />
                 </div>
             </button>
