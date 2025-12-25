@@ -4,6 +4,8 @@ import { GetZapretVersion, GetZaprUIVersion, OpenURL } from '../../../../../wail
 
 import { aboutInformation } from '../../../const'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { selectBatRunning } from '../../../../app/model/slice'
 
 interface InfoModalProps {
     animateClose: boolean
@@ -12,6 +14,8 @@ interface InfoModalProps {
 export function InfoModal({ animateClose }: InfoModalProps) {
     const [zapretVersion, setZapretVersion] = useState<string>('')
     const [zaprUIVersion, setZaprUIVersion] = useState<string>('')
+
+    const batRunning = useSelector(selectBatRunning);
 
     useEffect(() => {
         GetZapretVersion()
@@ -32,7 +36,7 @@ export function InfoModal({ animateClose }: InfoModalProps) {
                         Ссылка на zapret-discord-youtube
                     </a>
                 </p>
-                <div className={s.versions}>
+                <div className={`${s.versions} ${batRunning ? s.running : ''}`}>
                     <span>Версия zapret - {zapretVersion}</span>
                     <span>Версия приложения - {zaprUIVersion}</span>
                 </div>

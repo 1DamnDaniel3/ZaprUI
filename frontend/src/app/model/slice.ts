@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { WriteFile } from '../../../wailsjs/go/main/App';
 
 let initialState = {
     batRunning: false,
     soundSwitch: true,
+    theme: 'light'
 };
 
 const appSlice = createSlice({
@@ -12,8 +14,13 @@ const appSlice = createSlice({
         setBatRunning: (state, action) => {
             state.batRunning = action.payload;
         },
-        setSoundSwitch: (state) => {
-            state.soundSwitch = !state.soundSwitch
+        setSoundSwitch: (state, action) => {
+            state.soundSwitch = action.payload
+            WriteFile('soundProperties.json', { soundState: action.payload })
+        },
+        setTheme: (state, action) => {
+            state.theme = action.payload
+            WriteFile('themeProperties.json', { theme: action.payload})
         }
     },
 });
@@ -21,9 +28,11 @@ const appSlice = createSlice({
 export const { 
     setBatRunning,
     setSoundSwitch, 
+    setTheme,
 } = appSlice.actions;
 
 export default appSlice.reducer;
 
 export const selectBatRunning = (state: any): boolean => state.app.batRunning;
 export const selectSoundSwitch = (state: any): boolean => state.app.soundSwitch;
+export const selectTheme = (state: any): string => state.app.theme

@@ -28,8 +28,8 @@ $surface-color: var(--color-surface);
     --color-primary-hover: #377a30;
     --color-primary-dark: #103012;
 
-    --color-accent: #bc4749;
-    --color-accent-hover: #84292a;
+    --color-accent: #1b3622;
+    --color-accent-hover: #318429;
 
     // Базовые цвета — фон и обрамление
     --color-background: #edebeb; // Общий фон страницы
@@ -68,16 +68,49 @@ $surface-color: var(--color-surface);
 
     --brightness-hover: 0.8;
     --brightness-active: 0.6;
+
+    --color-light-shadow: rgba(255, 255, 255, 1);
+    --color-dark-shadow: rgba(0, 0, 0, 0.2);
+    --color-btn-border: gray;
+    --color-btn-background: #cccfd4;
+    --color-logo-shadow: #00aaff00;
+
+    --color-light-shadow-running: var(--color-background-primary-bright);
+    --color-dark-shadow-running: rgba(0, 0, 0, 0.2);
+    --color-btn-border-running: #152d1d;
+    --color-btn-background-running: var(--color-primary-hover);
+    --color-logo-shadow-running: #00aaff00;
+
+    --loader-background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.25) 0%,
+            rgba(0, 0, 0, 0.10) 50%,
+            rgba(0, 0, 0, 0.25) 100%);
+
+    --color-light-shadow-option: #ffffff33;
+    --color-dark-shadow-option: rgba(0, 0, 0, 0.2);
+    --color-light-inset-shadow-option: #ffffff44;
+    --color-dark-inset-shadow-option: #00000011;
+
+    --color-light-shadow-option-running: #ffffff22;
+    --color-dark-shadow-option-running: rgba(0, 0, 0, 0.2);
+    --color-light-inset-shadow-option-running: #ffffff22;
+    --color-dark-inset-shadow-option-running: #00000011;
 }
 
 [data-theme="dark"] {
-    --color-primary: #6a994e;
-    --color-primary-hover: #386641;
-    --color-accent: #bc4749;
+    --color-primary: #99754e;
+    --color-primary-transparent: #ba2e3c66;
+    --color-primary-hover: #7a3030;
+    --color-primary-dark: #301015;
+
+    --color-accent: #ee9c9c;
     --color-accent-hover: #84292a;
 
     // Базовые цвета — фон и обрамление
     --color-background: #121212; // Темный фон страницы
+    --color-background-primary: #720b0b; // Общий фон страницы
+    --color-background-primary-bright: #212121; // Общий фон страницы
+
     --color-surface: #1e1e1e; // Поверхности на фоне
     --color-surface-transparent: #1e1e1e55; // Поверхности на фоне
     --color-items: #2a2a2a;
@@ -90,6 +123,7 @@ $surface-color: var(--color-surface);
     --color-muted: #9ca3af; // Приглушённый текст
     --color-placeholder: #6b7280; // Плейсхолдеры
     --color-disabled: #4b635d; // Отключённые элементы
+    --color-link: #d52f2f;
 
     // Статусы — те же цвета, подходят и для тёмной темы
     --color-success: #22c55e;
@@ -97,16 +131,40 @@ $surface-color: var(--color-surface);
     --color-warning: #f97316;
     --color-info: #3b82f6;
 
-    // Специально для чата — оформление сообщений
-    --chat-bubble-bg: #2f2f2f; // Фон сообщения собеседника
-    --chat-bubble-user-bg: #10a37f; // Фон сообщения пользователя
-
-    // Другие — оформление вспомогательных элементов
-    --scrollbar-thumb: #374151; // Цвет ползунка в тёмной теме
-    --scrollbar-track: transparent; // Трек остаётся прозрачным
+    --color-success: #22c55e44; // Успешные действия, подтверждения
+    --color-background-error: #ef444444; // Ошибки, предупреждения об ошибке
+    --color-background-warning: #f9731644; // Предупреждения
+    --color-background-info: #3b82f644; // Информационные уведомления
 
     --brightness-hover: 1.4;
     --brightness-active: 1.8;
+
+    --color-light-shadow: rgba(255, 255, 255, 0.03);
+    --color-dark-shadow: rgba(0, 0, 0, 1);
+    --color-btn-border: rgb(0, 0, 0);
+    --color-btn-background: rgb(12, 12, 12);
+    --color-logo-shadow: #00aaff66;
+
+    --color-light-shadow-running: rgba(255, 255, 255, 0.03);
+    --color-dark-shadow-running: rgba(0, 0, 0, 0.2);
+    --color-btn-border-running: #1a040b;
+    --color-btn-background-running: #440816;
+    --color-logo-shadow-running: #00aaff00;
+
+    --loader-background: linear-gradient(135deg,
+            #ffffff11 0%,
+            #ffffff22 50%,
+            #ffffff11 100%);
+
+    --color-light-shadow-option: rgba(255, 255, 255, 0.03);
+    --color-dark-shadow-option: rgba(0, 0, 0, 0.3);
+    --color-light-inset-shadow-option: rgba(255, 255, 255, 0.03);
+    --color-dark-inset-shadow-option: rgba(0, 0, 0, 0.2);
+
+    --color-light-shadow-option-running: #ffffff22;
+    --color-dark-shadow-option-running: rgba(0, 0, 0, 0.1);
+    --color-light-inset-shadow-option-running: #ffffff22;
+    --color-dark-inset-shadow-option-running: #00000005;
 }
 
 

@@ -14,6 +14,7 @@ export function WindowControls() {
         <div className={s.wrapper} style={wrapperStyle}>
             <div>
                 <WindowControlButton type='info' />
+                <WindowControlButton type='theme' />
                 <WindowControlButton type='sound' />
             </div>
             <div>

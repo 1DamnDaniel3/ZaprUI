@@ -15,6 +15,10 @@
 
 .footer {
     color: var(--color-muted);
+
+    &.running {
+        color: var(--color-accent);
+    }
 }
 
 .link {
@@ -22,6 +26,6 @@
 
     &:hover {
         text-decoration: underline;
-        filter: brightness(0.5);
+        filter: brightness(var(--brightness-hover));
     }
 }
