@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 	logger "zaprUI/backend/Logger"
@@ -53,19 +54,37 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
+	if isAdmin() {
+		exec.Command("sc", "stop", "WinDivert").Run()
+	}
+	runTray(a.ctx, a.Logger)
+	windowWisible = true
+
 	// ===========================
 
+	defer func() {
+		if r := recover(); r != nil {
+			runtime.EventsEmit(a.ctx, "fatal-error", fmt.Sprintf("%v", r)) // FATAL EVENT
+		}
+	}()
 	//============================
 
 	// creating ProjectDir in User/AppData/Roaming/
 	if err := ensureAppDir(a.ProjectDir); err != nil {
-		panic(fmt.Errorf("❗error creating app directory in AppData: %w", err))
+		a.Logger.Error(err)
+		panic("Ошибка создания дирректории проекта")
 	}
 	if err := ensureAppDir(a.Temp); err != nil { // temp dir for sessions data files
-		panic(fmt.Errorf("❗error creating gitrepo directory in project dir: %w", err))
+		a.Logger.Error(err)
+		panic("Ошибка создания дирректории временных файлов")
 	}
 	if err := ensureAppDir(a.ReleaseDir); err != nil { // release repo
-		panic(fmt.Errorf("❗error creating release dir: %w", err))
+		a.Logger.Error(err)
+		panic("Ошибка создания дирректории релиза")
+	}
+	if err := ensureAppDir(a.ReleaseDir + "/bin"); err != nil { // release repo
+		a.Logger.Error(err)
+		panic("Ошибка создания дирректории релиза")
 	}
 
 	// == fetching GitHub Repo
@@ -86,50 +105,64 @@ func (a *App) startup(ctx context.Context) {
 		Timeout: 30 * time.Second,
 	}
 
-	release, err := updater.ParceLatestRelease(client) // Asking GitHub Releases about latest
+	ready, err := updater.IsReleaseReady(a.ReleaseDir) // Is release folder not empty
 	if err != nil {
 		a.Logger.Error(err)
-		panic(fmt.Errorf("❗error parce latest release: %v", err))
+		panic("Ошибка проверки дирректории релиза")
+
+	}
+
+	release, err := updater.ParceLatestRelease(client) // Asking GitHub Releases about latest
+	if err != nil {
+		if ready {
+			a.Logger.Error(err)
+			runtime.EventsEmit(a.ctx, "non-critical-error", `Ошибка обращения к GitHub Releases.
+			Вы можете использовать устаревшую версию zapret-discord-youtube`) // NON-CRITICAL EVENT
+		} else {
+			a.Logger.Error(err)
+			panic("Ошибка обращения к GitHub Releases. Проверьте подключение к интернету")
+
+		}
 	}
 	if err := updater.EnsureVersionFileExist(a.ProjectDir, release); err != nil { //  Check VersionFile
 		a.Logger.Error(err)
-		panic(fmt.Errorf("❗version file ensure error: %v", err))
+		panic("Ошибка проверки существования версионного файла")
 	}
 	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_version.txt")
 
 	latest, err := updater.IsLatestVersion(a.VersionFilePath, release) // Trying version
 	if err != nil {
 		a.Logger.Error(err)
-		panic(fmt.Errorf("❗failed to check version: %v", err))
+		panic("Не удалось проверить версию")
 	}
-	ready, err := updater.IsReleaseReady(a.ReleaseDir)
-	if err != nil {
-		a.Logger.Error(err)
-		fmt.Printf("failed to check release files: %v", err)
-	}
+
+	// ============= If version correct and release ready we start, else Download actual
+	// version of zapret and fix version
 
 	if latest && ready {
 		fmt.Println("You use actual version!")
 	} else {
-		if err := updater.DownloadReleaseZip(client, release, a.ProjectDir); err != nil {
+		if err := updater.DownloadReleaseZip(client, release, a.ProjectDir); err != nil { // Download Zip
 			a.Logger.Error(err)
-			panic(fmt.Errorf("❗Downloading failed because of: %v", err))
+			panic("Ошибка загрузки последнего релиза zapret-discord-youtube")
 		}
 
-		if err := updater.CorrectVersionFile(a.ProjectDir, release); err != nil { //  correct version
+		if err := updater.CorrectVersionFile(a.ProjectDir, release); err != nil { //  fix version
 			a.Logger.Error(err)
-			panic(fmt.Errorf("❗version file ensure error: %v", err))
+			runtime.EventsEmit(a.ctx, "non-critical-error", `Ошибка корректировки версии.
+			Вы можете не получить новую версию zapret-discord-youtube`)
 		}
 
 		// unpack zip into releaseDir
 		zipPath := filepath.Join(a.ProjectDir, "zapret.zip")
 		if err := utils.Unzip(zipPath, a.ReleaseDir); err != nil {
 			a.Logger.Error(err)
-			panic(fmt.Errorf("❗unzip failed: %v", err))
+			panic("Ошибка распаковки архива zapret-dicord-youtube")
 		}
 	}
 
 	a.Bats = using.FindBats(a.ReleaseDir)
+
 	runtime.EventsEmit(a.ctx, "release:ready", a.Bats)
 
 }
@@ -195,13 +228,14 @@ func (a *App) CloseWindow() {
 
 // Hide window
 func (a *App) WindowHide() {
-	runTray(a.ctx, a.Logger)
+	windowWisible = false
 	runtime.WindowHide(a.ctx)
 
 }
 
 // Show window
 func (a *App) WindowShow() {
+	windowWisible = true
 	runtime.WindowShow(a.ctx)
 }
 

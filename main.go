@@ -3,6 +3,10 @@ package main
 import (
 	"context"
 	"embed"
+	"os/exec"
+	"sync"
+	"syscall"
+	"unsafe"
 	logger "zaprUI/backend/Logger"
 
 	"github.com/getlantern/systray"
@@ -42,11 +46,11 @@ func main() {
 		OnStartup:        app.startup,
 		OnShutdown: func(ctx context.Context) {
 			app.Logger.Info("Shut down")
+			if isAdmin() {
+				exec.Command("sc", "stop", "zapret").Run()
+				exec.Command("sc", "stop", "WinDivert").Run()
+			}
 		},
-		// OnBeforeClose: func(ctx context.Context) (prevent bool) {
-		// 	exec.Command("sc", "stop", "WinDivert").Run()
-		// 	return false
-		// },
 
 		Bind: []interface{}{
 			app,
@@ -54,30 +58,23 @@ func main() {
 	})
 
 	if err != nil {
+		app.Logger.Error(err)
 		println("Error:", err.Error())
 	}
 
 }
 
-var isTrayRunning bool
-
-// ========== Tray routine =============
+var trayOnce sync.Once
 
 func runTray(ctx context.Context, logger logger.Logger) {
-
-	if isTrayRunning {
-		return
-	}
-
-	isTrayRunning = true
-
-	go func() {
-		systray.Run(func() {
+	trayOnce.Do(func() {
+		go systray.Run(func() {
 			onReady(ctx, logger)
 		}, func() {})
-	}()
-
+	})
 }
+
+var windowWisible bool
 
 func onReady(ctx context.Context, logger logger.Logger) {
 	systray.SetTitle("ZaprUI")
@@ -100,18 +97,53 @@ func onReady(ctx context.Context, logger logger.Logger) {
 		for {
 			select {
 			case <-mShow.ClickedCh:
-				runtime.WindowShow(ctx)
+				if !windowWisible {
+					logger.Info("Show window from tray")
+					runtime.WindowShow(ctx)
+					windowWisible = true
+				}
 
 			case <-mHide.ClickedCh:
-				runtime.WindowHide(ctx)
+				if windowWisible {
+					logger.Info("Close window from tray")
+					runtime.WindowHide(ctx)
+					windowWisible = false
+				}
 
 			case <-mQuit.ClickedCh:
+				logger.Info("Quit from tray")
 				runtime.Quit(ctx)
 				return
 
 			}
 		}
 	}()
+}
+
+func isAdmin() bool {
+	h, err := syscall.GetCurrentProcess()
+	if err != nil {
+		return false
+	}
+
+	var token syscall.Token
+	err = syscall.OpenProcessToken(h, syscall.TOKEN_QUERY, &token)
+	if err != nil {
+		return false
+	}
+	defer token.Close()
+
+	var elevation uint32
+	var outLen uint32
+
+	err = syscall.GetTokenInformation(
+		token,
+		syscall.TokenElevation,
+		(*byte)(unsafe.Pointer(&elevation)),
+		uint32(unsafe.Sizeof(elevation)),
+		&outLen,
+	)
+	return err == nil && elevation != 0
 }
 
 // $env:CGO_ENABLED="1"; wails build -o ./ZaprUI.exe

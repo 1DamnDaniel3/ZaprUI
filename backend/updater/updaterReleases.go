@@ -94,7 +94,7 @@ func IsReleaseReady(dir string) (bool, error) {
 	}
 	binFolder, err := os.ReadDir(dir + "/bin")
 	if err != nil {
-		return false, fmt.Errorf("cannot read release directory: %w", err)
+		return false, fmt.Errorf("cannot read /release/bin directory: %w", err)
 	}
 	batsCount := 0
 	winwsExe := 0
