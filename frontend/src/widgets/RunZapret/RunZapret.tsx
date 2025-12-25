@@ -106,17 +106,13 @@ export function RunZapret() {
         backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
     }
 
-    const footerStyle = {
-        color: batRunning ? 'var(--color-primary-dark)' : undefined,
-    }
-
     return (
         <div className={s.wrapper} style={wrapperStyle}>
             {error && <DefaultWarning text={error.text} type={error.type} />}
             <BatList batsReady={batsReady} />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
 
-            <span className={s.footer} style={footerStyle}>
+            <span className={`${s.footer} ${batRunning ? s.running : ''}`}>
                 Authors: <a className={s.link} onClick={() => handleOpenUrl('https://github.com/1DamnDaniel3')}>1DamnDaniel3</a>
                 , <a className={s.link} onClick={() => handleOpenUrl('https://github.com/Saltein')}>Saltein</a>
             </span>

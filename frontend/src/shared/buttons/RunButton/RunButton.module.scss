@@ -24,19 +24,30 @@
 .btn {
     box-sizing: content-box;
     position: relative;
-    background-color: vars.$border-color;
+    background-color: var(--color-btn-background);
     height: 180px;
     width: 180px;
-    border: 6px solid grey;
+    border: 6px solid var(--color-btn-border);
     border-radius: 20%;
     cursor: pointer;
     box-shadow:
-        -5px -16px 26px #ffffff,
-        -5px -8px 13px #ffffff,
-        -16px 0px 26px #ffffff,
-        5px 20px 20px rgba(0, 0, 0, 0.2),
+        -5px -16px 26px var(--color-light-shadow),
+        -8px -8px 13px var(--color-light-shadow),
+        -16px 0px 26px var(--color-light-shadow),
+        5px 20px 20px var(--color-dark-shadow),
         inset 0px -5px 10px #00000055;
     transition: background-color vars.$transition-slow, box-shadow vars.$transition-very-slow;
+
+    &.running {
+        background-color: var(--color-btn-background-running);
+        box-shadow:
+            -5px -16px 26px var(--color-light-shadow-running),
+            -8px -8px 13px var(--color-light-shadow-running),
+            -16px 0px 26px var(--color-light-shadow-running),
+            5px 20px 20px var(--color-dark-shadow-running),
+            inset 0px -5px 10px #00000055;
+        border-color: var(--color-btn-border-running);
+    }
 }
 
 .top {
@@ -47,11 +58,16 @@
     position: absolute;
     top: -16px;
     background-color: vars.$background-color;
-    box-shadow: inset 10px 10px 30px #f8f8f8;
+    box-shadow: inset 10px 10px 30px var(--color-light-shadow);
     height: 180px;
     width: 180px;
     z-index: 10;
     transition: vars.$transition-slow;
+
+    &.running {
+        background-color: var(--color-background-primary);
+        box-shadow: none;
+    }
 }
 
 .icon {
@@ -59,12 +75,12 @@
     width: 120px;
 
     transition: vars.$transition-slow;
-    
+
     filter:
-        drop-shadow(0.5px 0.5px 1px rgba(255, 255, 255, 1)) drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.2)) drop-shadow(-4px -2px 2px rgba(255, 255, 255, 1));
+        drop-shadow(0 0 24px var(--color-logo-shadow)) drop-shadow(0.5px 0.5px 1px var(--color-light-shadow)) drop-shadow(2px 4px 2px var(--color-dark-shadow)) drop-shadow(-4px -2px 2px var(--color-light-shadow));
 
     &.running {
         filter:
-            drop-shadow(0.5px 0.5px 1px var(--color-background-primary-bright)) drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.2)) drop-shadow(-2px -2px 2px var(--color-background-primary-bright));
+            drop-shadow(0 0 24px var(--color-logo-shadow)) drop-shadow(0.5px 0.5px 1px var(--color-light-shadow-running)) drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.2)) drop-shadow(-2px -2px 2px var(--color-light-shadow-running));
     }
 }

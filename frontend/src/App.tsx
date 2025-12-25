@@ -1,24 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import './App.css';
 import { RunZapret, WindowControls } from './widgets';
 import { useDispatch } from 'react-redux';
 import { ReadFile } from '../wailsjs/go/main/App';
 import { setChosenBat } from './entities/BatCard/model/slice';
-import { setSoundSwitch } from './app/model/slice';
+import { setSoundSwitch, setTheme } from './app/model/slice';
 
 function App() {
     const dispatch = useDispatch()
+    const [isInitialized, setIsInitialized] = useState(false)
+
+    useLayoutEffect(() => {
+        // Убираем transition перед установкой темы
+        document.documentElement.classList.add('no-transition')
+
+        Promise.all([
+            ReadFile('batProperties.json')
+                .then((data) => {
+                    if (data.hasOwnProperty('chosenBat')) dispatch(setChosenBat(data.chosenBat))
+                }),
+            ReadFile('soundProperties.json')
+                .then((data) => {
+                    if (data.hasOwnProperty('soundState')) dispatch(setSoundSwitch(data.soundState))
+                }),
+            ReadFile('themeProperties.json')
+                .then((data) => {
+                    if (data.hasOwnProperty('theme')) {
+                        dispatch(setTheme(data.theme))
+                        document.documentElement.setAttribute('data-theme', data.theme)
+                    }
+                })
+        ]).then(() => {
+            // Восстанавливаем transition после небольшой задержки
+            setTimeout(() => {
+                document.documentElement.classList.remove('no-transition')
+                setIsInitialized(true)
+            }, 50)
+        })
+    }, [])
 
     useEffect(() => {
-        ReadFile('batProperties.json')
-            .then((data) => {
-                if (data.hasOwnProperty('chosenBat')) dispatch(setChosenBat(data.chosenBat))
-            })
-        ReadFile('soundProperties.json')
-            .then((data) => {
-                if (data.hasOwnProperty('soundState')) dispatch(setSoundSwitch(data.soundState))
-            })
-
         const onWheel = (e: WheelEvent) => {
             if (e.ctrlKey) {
                 e.preventDefault();

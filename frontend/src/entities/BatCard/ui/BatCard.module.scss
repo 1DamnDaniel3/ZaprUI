@@ -9,15 +9,21 @@
     width: 100%;
     height: 48px;
     padding: vars.$spacing-sm vars.$spacing-lg;
-    box-shadow: inset 10px 10px 30px #f8f8f8;
+    box-shadow: inset 10px 10px 30px var(--color-light-shadow);
     border-radius: 48px;
     top: -8px;
     transition: vars.$transition-slow;
     color: vars.$text-color;
+    text-shadow: 0 0 8px #ffffff99;
     font-weight: 500;
 
     &:hover {
         transform: scale(1.02);
+    }
+
+    &.btnRunning {
+        background-color: var(--color-background-primary);
+        box-shadow: none;
     }
 }
 
@@ -30,6 +36,7 @@
     height: 32px;
     margin-left: auto;
     color: vars.$text-color;
+    filter: drop-shadow(0 0 8px #ffffff99);
 }
 
 .running {

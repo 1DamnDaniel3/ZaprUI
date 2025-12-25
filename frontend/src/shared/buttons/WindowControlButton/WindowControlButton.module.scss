@@ -13,7 +13,7 @@
     &:hover {
         .icon {
             animation: roundShake 0.2s;
-            filter: drop-shadow(1px 1px 2px #00000066) drop-shadow(-2px -1px 2px #ffffff99);
+            filter: drop-shadow(1px 1px 2px var(--color-dark-shadow)) drop-shadow(-2px -1px 2px var(--color-light-shadow));
         }
     }
 }
