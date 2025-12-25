@@ -214,6 +214,7 @@ func (a *App) ReadFile(name string) (map[string]interface{}, error) {
 
 // Use to copy logs to clipboard
 func (a *App) CopyLogsToClipboard() {
+	a.Logger.Info("Logs copied to clipboard")
 	err := utils.CopyToClipboard(a.ProjectDir, "logs.txt")
 	if err != nil {
 		a.Logger.Error(err)
