@@ -1,6 +1,5 @@
 import s from './WindowControlButton.module.scss';
 import MinimizeIcon from '../../assets/icons/minimize.svg?react';
-import MaximizeIcon from '../../assets/icons/maximize.svg?react';
 import CloseIcon from '../../assets/icons/close.svg?react';
 import InfoIcon from '../../assets/icons/information.svg?react';
 import SoundOn from '../../assets/icons/sound-on.svg?react';
@@ -48,7 +47,8 @@ export function WindowControlButton({ type }: { type: 'minimize' | 'close' | 'in
                 }, 180)
             }
         } else if (type === 'sound') {
-            dispatch(setSoundSwitch())
+            if (soundState) dispatch(setSoundSwitch(false))
+            else dispatch(setSoundSwitch(true))
             playSound(backSound, 0.2, soundState)
         }
     }

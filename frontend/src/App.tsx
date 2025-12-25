@@ -1,18 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { RunZapret, WindowControls } from './widgets';
 import { useDispatch } from 'react-redux';
 import { ReadFile } from '../wailsjs/go/main/App';
 import { setChosenBat } from './entities/BatCard/model/slice';
+import { setSoundSwitch } from './app/model/slice';
 
 function App() {
     const dispatch = useDispatch()
 
-
     useEffect(() => {
-        ReadFile('properties.json')
+        ReadFile('batProperties.json')
             .then((data) => {
-                if (data.chosenBat) dispatch(setChosenBat(data.chosenBat))
+                if (data.hasOwnProperty('chosenBat')) dispatch(setChosenBat(data.chosenBat))
+            })
+        ReadFile('soundProperties.json')
+            .then((data) => {
+                if (data.hasOwnProperty('soundState')) dispatch(setSoundSwitch(data.soundState))
             })
 
         const onWheel = (e: WheelEvent) => {

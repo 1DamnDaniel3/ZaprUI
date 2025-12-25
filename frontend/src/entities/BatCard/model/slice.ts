@@ -15,7 +15,7 @@ const chosenBatSlice = createSlice({
         setChosenBat: (state, action) => {
             const payload = action.payload;
             state.chosenBat = payload;
-            WriteFile('properties.json', { chosenBat: payload })
+            WriteFile('batProperties.json', { chosenBat: payload })
         },
         setBatFiles: (state, action) => {
             const payloadList = action.payload as BatFile[];

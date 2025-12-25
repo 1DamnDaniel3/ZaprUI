@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { WriteFile } from '../../../wailsjs/go/main/App';
 
 let initialState = {
     batRunning: false,
@@ -12,9 +13,10 @@ const appSlice = createSlice({
         setBatRunning: (state, action) => {
             state.batRunning = action.payload;
         },
-        setSoundSwitch: (state) => {
-            state.soundSwitch = !state.soundSwitch
-        }
+        setSoundSwitch: (state, action) => {
+            state.soundSwitch = action.payload
+            WriteFile('soundProperties.json', { soundState: action.payload })
+        },
     },
 });
 
