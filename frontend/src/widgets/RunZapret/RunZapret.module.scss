@@ -24,8 +24,19 @@
 .link {
     cursor: pointer;
 
+    &.github {
+        color: var(--color-link);
+    }
+
     &:hover {
         text-decoration: underline;
         filter: brightness(var(--brightness-hover));
     }
+}
+
+.modalDiv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }

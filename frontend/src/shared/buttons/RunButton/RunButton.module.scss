@@ -30,13 +30,13 @@
     border: 6px solid var(--color-btn-border);
     border-radius: 20%;
     cursor: pointer;
+    transition: background-color vars.$transition-slow, box-shadow vars.$transition-very-slow;
     box-shadow:
         -5px -16px 26px var(--color-light-shadow),
         -8px -8px 13px var(--color-light-shadow),
         -16px 0px 26px var(--color-light-shadow),
         5px 20px 20px var(--color-dark-shadow),
         inset 0px -5px 10px #00000055;
-    transition: background-color vars.$transition-slow, box-shadow vars.$transition-very-slow;
 
     &.running {
         background-color: var(--color-btn-background-running);
