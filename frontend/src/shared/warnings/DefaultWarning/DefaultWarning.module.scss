@@ -13,6 +13,7 @@
     z-index: 1010;
     backdrop-filter: blur(4px);
     box-shadow: $shadow-lg;
+    color: var(--color-text);
 
     animation: appearDisappear 5000ms ease-in-out;
 }
