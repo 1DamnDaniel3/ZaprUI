@@ -111,7 +111,7 @@ func (a *App) startup(ctx context.Context) {
 		panic("Ошибка проверки дирректории релиза")
 
 	}
-	
+
 	release, err := updater.ParceLatestRelease(client) // Asking GitHub Releases about latest
 	if err != nil {
 		if ready {
@@ -128,7 +128,7 @@ func (a *App) startup(ctx context.Context) {
 		a.Logger.Error(err)
 		panic("Ошибка проверки существования версионного файла")
 	}
-	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_versionasd asd dsa.txt")
+	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_version.txt")
 
 	latest, err := updater.IsLatestVersion(a.VersionFilePath, release) // Trying version
 	if err != nil {
@@ -138,6 +138,9 @@ func (a *App) startup(ctx context.Context) {
 
 	// ============= If version correct and release ready we start, else Download actual
 	// version of zapret and fix version
+
+	// ------------------------------- NON-CRITICAL ERR TEST --- DELETE AFTER ----------------------
+	//	runtime.EventsEmit(a.ctx, "non-critical-error", `Vsё naebnulos' nam pizda sir`) // NON-CRITICAL ERR
 
 	if latest && ready {
 		fmt.Println("You use actual version!")
@@ -150,7 +153,7 @@ func (a *App) startup(ctx context.Context) {
 		if err := updater.CorrectVersionFile(a.ProjectDir, release); err != nil { //  fix version
 			a.Logger.Error(err)
 			runtime.EventsEmit(a.ctx, "non-critical-error", `Ошибка корректировки версии.
-			Вы можете не получить новую версию zapret-discord-youtube`)
+			Вы можете не получить новую версию zapret-discord-youtube`) // NON-CRITICAL ERR
 		}
 
 		// unpack zip into releaseDir
@@ -161,9 +164,8 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}
 
-	
 	a.Bats = using.FindBats(a.ReleaseDir)
-	
+
 	runtime.EventsEmit(a.ctx, "release:ready", a.Bats)
 }
 
