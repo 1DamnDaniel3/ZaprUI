@@ -128,7 +128,7 @@ func (a *App) startup(ctx context.Context) {
 		a.Logger.Error(err)
 		panic("Ошибка проверки существования версионного файла")
 	}
-	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_versionasd asd dsa.txt")
+	a.VersionFilePath = filepath.Join(a.ProjectDir, "release_version.txt")
 
 	latest, err := updater.IsLatestVersion(a.VersionFilePath, release) // Trying version
 	if err != nil {
