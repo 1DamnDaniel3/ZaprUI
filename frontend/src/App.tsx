@@ -4,9 +4,12 @@ import { RunZapret, WindowControls } from './widgets';
 import { useTheme } from './shared/hooks/useTheme';
 import { useAppInitialization } from './shared/hooks/useAppInitialization';
 import { usePreventZoom } from './shared/hooks/usePreventZoom';
+import { useBat } from './shared/hooks/useBat';
+import { useEffect } from 'react';
 
 function App() {
     const { theme } = useTheme()
+    const { batRunning } = useBat()
     const { isInitialized } = useAppInitialization()
     usePreventZoom()
 
@@ -16,7 +19,7 @@ function App() {
 
     return (
         <div id="App">
-            <Snowfall color={theme === 'light' ? '#aaa' : '#ededed'} />
+            <Snowfall color={theme === 'light' && !batRunning ? '#aaa' : '#ededed'} />
             <WindowControls />
             <RunZapret />
         </div>

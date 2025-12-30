@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 import { InfoModal } from './InfoModal/InfoModal';
 import { useTheme } from '../../hooks/useTheme';
-import { useBatRunning } from '../../hooks/useBat';
+import { useBat } from '../../hooks/useBat';
 import { useSound } from '../../hooks/useSound';
 
 type WindowControlButtonType = 'minimize' | 'close' | 'info' | 'sound' | 'theme';
@@ -23,7 +23,7 @@ interface WindowControlButtonProps {
 export function WindowControlButton({ type }: WindowControlButtonProps) {
     const { soundState, toggleSound, play } = useSound()
     const { theme, toggleTheme } = useTheme()
-    const { batRunning } = useBatRunning()
+    const { batRunning } = useBat()
 
     const [infoOpen, setInfoOpen] = useState<boolean>(false)
     const [animateClose, setAnimateClose] = useState<boolean>(false)

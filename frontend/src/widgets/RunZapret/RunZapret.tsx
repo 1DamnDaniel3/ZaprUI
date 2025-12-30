@@ -1,126 +1,28 @@
 import s from './RunZapret.module.scss';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { FindBats, RunBat, KillBat, OpenURL } from '../../../wailsjs/go/main/App';
+import { OpenURL } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
-import { useDispatch } from 'react-redux';
-import { setBatFiles } from '../../entities/BatCard/model/slice';
 import { RunButton } from '../../shared/buttons';
-import { setBatRunning } from '../../app/model/slice';
 import { DefaultWarning } from '../../shared';
 import { BigError } from '../../shared/warnings';
 import { useBat } from '../../shared/hooks/useBat';
-import { useSound } from '../../shared/hooks/useSound';
+import { useError } from '../../shared/hooks/useError';
+import { useLoadBats } from '../../shared/hooks/useLoadBats';
+import { useBatChanging } from '../../shared/hooks/useBatChanging';
 
 export function RunZapret() {
-    interface errorInterface {
-        text: string;
-        type: 'info' | 'warning' | 'error';
-    }
+    const { batToRun, batRunning, runBat } = useBat();
+    const { warning, criticalError, newCriticalError } = useError()
+    const { batsReady } = useLoadBats()
 
-    const dispatch = useDispatch();
-
-    const { batToRun, batRunning, changeBatRunning } = useBat();
-    const { play } = useSound()
-
-    const wasRunningOnChange = useRef(false);
-
-    const [error, setError] = useState<errorInterface | null>(null); // потом можно в redux запихнуть и runBat() в хук засунуть
-    const [bigError, setBigError] = useState<string>('');
-    const [batsReady, setBatsReady] = useState<boolean>(false);
-
-    async function runBat(id: number) {
-        if (id === -1) {
-            setError({ text: 'Не выбран .bat файл', type: 'warning' });
-            return;
-        }
-
-        try {
-            if (batRunning) {
-                await KillBat();
-                play('stop')
-                changeBatRunning(false);
-            } else {
-                await RunBat(id);
-                play('run')
-                changeBatRunning(true);
-            }
-        } catch {
-            setError({ text: 'Ошибка при запуске .bat файла', type: 'error' });
-        }
-    }
-
-    // Подписка на событие backend
-    useLayoutEffect(() => {
-        const findBatsHandler = () => {
-            FindBats().then((bats) => {
-                const result = Object.entries(bats).map(([id, path]) => ({ id, path }));
-                dispatch(setBatFiles(result));
-                setBatsReady(true);
-            }).catch(() => {
-                setBatsReady(false);
-                setError({ text: 'Ошибка загрузки .bat файлов', type: 'error' })
-            });
-        };
-
-        const newBigError = (error: string) => setBigError(error)
-        const newSmallError = (error: string) => setError({ type: 'error', text: error })
-
-        // Подписка на событие backend
-        window.runtime.EventsOn("release:ready", findBatsHandler);
-        window.runtime.EventsOn("fatal-error", newBigError)
-        window.runtime.EventsOn("non-critical-error", newSmallError)
-        // Очистка при демонтировании
-        return () => {
-            window.runtime.EventsOff("release:ready", findBatsHandler);
-            window.runtime.EventsOff("fatal-error", newBigError);
-            window.runtime.EventsOff("non-critical-error", newSmallError);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!error) return;
-        let timeout = setTimeout(() => setError(null), 5000);
-        return () => clearTimeout(timeout);
-    }, [error])
-
-    useEffect(() => {
-        if (batToRun.id === -1) return;
-        // если в момент смены bat был запущен — запоминаем
-        wasRunningOnChange.current = batRunning;
-
-        if (batRunning) {
-            KillBat()
-                .then(() => {
-                    dispatch(setBatRunning(false));
-                    setError({ text: 'Смена .bat файла...', type: 'info' });
-
-                    // запускаем новый ТОЛЬКО если прошлый был запущен
-                    if (wasRunningOnChange.current) {
-                        return RunBat(batToRun.id);
-                    }
-                })
-                .then(() => {
-                    if (wasRunningOnChange.current) {
-                        dispatch(setBatRunning(true));
-                    }
-                })
-                .catch(() => {
-                    setError({ text: 'Ошибка при смене .bat файла', type: 'error' });
-                });
-        }
-    }, [batToRun.id]);
-
-    const wrapperStyle = {
-        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
-    }
+    useBatChanging()
 
     return (
-        <div className={s.wrapper} style={wrapperStyle}>
-            {error && <DefaultWarning text={error.text} type={error.type} />}
+        <div className={`${s.wrapper} ${batRunning ? s.running : ''}`}>
+            {warning && <DefaultWarning text={warning.text} type={warning.type} />}
             <BatList batsReady={batsReady} />
             <RunButton title='Run Bat' onClick={() => runBat(batToRun.id)} />
 
-            {bigError && <BigError bigError={bigError} setBigError={setBigError} />}
+            {criticalError && <BigError bigError={criticalError} setBigError={newCriticalError} />}
 
             <span className={`${s.footer} ${batRunning ? s.running : ''}`}>
                 Authors: <a className={s.link} onClick={() => OpenURL('https://github.com/1DamnDaniel3')}>1DamnDaniel3</a>
