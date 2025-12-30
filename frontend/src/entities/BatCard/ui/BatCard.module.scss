@@ -36,7 +36,16 @@
     height: 32px;
     margin-left: auto;
     color: vars.$text-color;
+    transition: transform 0.1s ease-in-out;
     filter: drop-shadow(0 0 8px #ffffff99);
+
+    &.iconRunning {
+        transform: rotate(0deg);
+    }
+
+    &.iconOpen {
+        transform: rotate(180deg);
+    }
 }
 
 .running {

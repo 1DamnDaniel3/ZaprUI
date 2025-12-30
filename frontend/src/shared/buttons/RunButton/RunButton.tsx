@@ -1,20 +1,23 @@
 import s from './RunButton.module.scss';
 import AppIcon from '../../../../../build/windows/icon.ico';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectBatRunning, selectSoundSwitch, selectTheme } from '../../../app/model/slice';
-import { playSound } from '../../lib/playSound';
-import selectSound from '../../assets/sounds/select.mp3'
-import backSound from '../../assets/sounds/back.mp3'
+import { useBat } from '../../hooks/useBat';
+import { useSound } from '../../hooks/useSound';
 
-export function RunButton({ onClick }: { title: string, onClick: () => void, isActive?: boolean }) {
+interface RunButtonProps {
+    title: string,
+    onClick: () => void,
+    isActive?: boolean
+}
+
+export function RunButton({ onClick }: RunButtonProps) {
     const [animate, setAnimate] = useState(false)
 
-    const batRunning = useSelector(selectBatRunning);
-    const soundState = useSelector(selectSoundSwitch)
+    const { batRunning } = useBat()
+    const { play } = useSound()
 
     const handleClick = () => {
-        playSound(batRunning ? backSound : selectSound, 0.1, soundState)
+        play(batRunning ? 'back' : 'select')
         setAnimate(true);
         setTimeout(() => setAnimate(false), 200);
     }

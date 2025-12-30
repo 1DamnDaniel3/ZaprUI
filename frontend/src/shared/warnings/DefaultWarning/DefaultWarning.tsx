@@ -1,6 +1,11 @@
 import s from './DefaultWarning.module.scss';
 
-export function DefaultWarning({ text, type }: { text: string, type: 'info' | 'warning' | 'error' }) {
+interface DefaultWarningProps {
+    text: string,
+    type: 'info' | 'warning' | 'error'
+}
+
+export function DefaultWarning({ text, type }: DefaultWarningProps) {
     const typeBackgroundColorMap = {
         'info': 'var(--color-background-info)',
         'warning': 'var(--color-background-warning)',

@@ -140,7 +140,7 @@ func (a *App) startup(ctx context.Context) {
 	// version of zapret and fix version
 
 	// ------------------------------- NON-CRITICAL ERR TEST --- DELETE AFTER ----------------------
-	//	runtime.EventsEmit(a.ctx, "non-critical-error", `Vsё naebnulos' nam pizda sir`) // NON-CRITICAL ERR
+		// runtime.EventsEmit(a.ctx, "non-critical-error", `Vsё naebnulos' nam pizda sir`) // NON-CRITICAL ERR
 
 	if latest && ready {
 		fmt.Println("You use actual version!")

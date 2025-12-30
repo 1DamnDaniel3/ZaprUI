@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../../app/store';
-import { BatFile } from './interfaces';
 import { WriteFile } from '../../../../wailsjs/go/main/App';
+import { BatFile } from '../../../shared/interfaces/interfaces';
 
 let initialState = {
     chosenBat: { id: -1, path: '' },

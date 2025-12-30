@@ -11,6 +11,10 @@
     align-items: center;
 
     transition: vars.$transition-extra-very-slow;
+
+    &.running {
+        background-color: var(--color-background-primary);
+    }
 }
 
 .footer {

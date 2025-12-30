@@ -1,11 +1,9 @@
 import s from './InfoModal.module.scss'
 import { DefaultModal } from '../../../modals/DefaultModal/DefaultModal'
 import { GetZapretVersion, GetZaprUIVersion, OpenURL } from '../../../../../wailsjs/go/main/App'
-
 import { aboutInformation } from '../../../const'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { selectBatRunning } from '../../../../app/model/slice'
+import { useBat } from '../../../hooks/useBat'
 
 interface InfoModalProps {
     animateClose: boolean
@@ -15,7 +13,7 @@ export function InfoModal({ animateClose }: InfoModalProps) {
     const [zapretVersion, setZapretVersion] = useState<string>('')
     const [zaprUIVersion, setZaprUIVersion] = useState<string>('')
 
-    const batRunning = useSelector(selectBatRunning);
+    const { batRunning } = useBat()
 
     useEffect(() => {
         GetZapretVersion()

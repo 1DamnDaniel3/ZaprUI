@@ -8,13 +8,17 @@
     border-radius: vars.$border-radius-md;
     cursor: pointer;
     box-shadow: vars.$shadow-sm;
-    color: var(--color-text);
+    color: white;
+    font-weight: 500;
+    text-shadow: 0 1px 4px #0008;
+    font-size: medium;
+    transition: background-color vars.$transition-slow, border-radius vars.$transition-extra-very-slow;
 
     box-shadow:
         -1.5px -4px 6px var(--color-light-shadow-option),
         -1.5px -4px 3.5px var(--color-light-shadow-option),
         -4px 0 6px var(--color-light-shadow-option),
-        1.5px 5px 5px var(--color-dark-shadow-option),
+        1.5px 5px 5px var(--color-dark-inset-shadow-option),
         vars.$shadow-lg,
         inset 2px 2px 4px var(--color-dark-inset-shadow-option),
         inset -2px -2px 4px var(--color-light-inset-shadow-option);
@@ -33,5 +37,12 @@
             vars.$shadow-lg,
             inset 3px 3px 4px var(--color-dark-inset-shadow-option),
             inset -3px -3px 4px var(--color-light-inset-shadow-option);
+    }
+
+    &.passive {
+        background-color: var(--color-border);
+        border: 1px solid var(--color-btn-border);
+        pointer-events: none;
+        border-radius: 120px;
     }
 }

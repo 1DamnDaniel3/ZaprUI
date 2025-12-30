@@ -1,15 +1,9 @@
 import s from './BatList.module.scss';
 import { BatCard } from '../../../../entities';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectBatFiles, selectChosenBat, setChosenBat } from '../../../../entities/BatCard/model/slice';
 import { useEffect, useRef, useState } from 'react';
-import { BatFile } from '../../../../entities/BatCard/model/interfaces';
-import { selectBatRunning, selectSoundSwitch } from '../../../../app/model/slice';
-import { playSound } from '../../../../shared/lib/playSound';
 import { ElementLoader } from '../../../../shared';
-
-import openSound from '../../../../shared/assets/sounds/pressing-a-computer-button.mp3'
-import closeSound from '../../../../shared/assets/sounds/unpressing-a-computer-button.mp3'
+import { useBat } from '../../../../shared/hooks/useBat';
+import { useSound } from '../../../../shared/hooks/useSound';
 
 interface BatListProps {
     batsReady?: boolean
@@ -19,31 +13,24 @@ export function BatList({ batsReady }: BatListProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [animate, setAnimate] = useState<boolean>(false);
 
-    const dispatch = useDispatch();
     const listRef = useRef<HTMLDivElement>(null);
 
-    const chosenBat = useSelector(selectChosenBat);
-    const foundBats = useSelector(selectBatFiles);
-    const batRunning = useSelector(selectBatRunning);
-    const soundState = useSelector(selectSoundSwitch);
+    const { batToRun, batList, batRunning, changeBatToRun } = useBat()
+    const { play } = useSound()
 
     const handleClick = () => {
         if (!isOpen) {
             setIsOpen(true)
             setAnimate(false)
-            playSound(openSound, 0.3, soundState)
+            play('open')
         }
         else {
             setAnimate(true)
-            playSound(closeSound, 0.3, soundState)
+            play('close')
             setTimeout(() => {
                 setIsOpen(false)
             }, 280)
         }
-    }
-
-    const handleChoose = (bat: BatFile) => {
-        dispatch(setChosenBat({ id: Number(bat.id), path: bat.path }));
     }
 
     useEffect(() => {
@@ -57,16 +44,16 @@ export function BatList({ batsReady }: BatListProps) {
 
     return (
         <div className={`${s.wrapper} ${batRunning ? s.wrapperRunning : ''}`} onClick={handleClick} ref={listRef}>
-            <BatCard key={chosenBat.id + chosenBat.path} id={Number(chosenBat.id)} path={chosenBat.path} isOpen={isOpen} />
+            <BatCard key={batToRun.id + batToRun.path} id={Number(batToRun.id)} path={batToRun.path} isOpen={isOpen} />
             {isOpen &&
                 <div className={`${s.batList} ${batRunning ? s.runningList : ''} ${animate ? s.animate : ''}`}>
-                    {foundBats && batsReady
+                    {batList && batsReady
                         ?
-                        foundBats.map((bat) => (
+                        batList.map((bat) => (
                             <span
                                 key={bat.id + bat.path}
-                                className={`${s.option} ${chosenBat.id === Number(bat.id) ? s.selected : ''} ${batRunning ? s.runningOption : ''}`}
-                                onClick={() => handleChoose(bat)}
+                                className={`${s.option} ${batToRun.id === Number(bat.id) ? s.selected : ''} ${batRunning ? s.runningOption : ''}`}
+                                onClick={() => changeBatToRun(bat)}
                             >
                                 {bat.path.split('\\').pop()}
                             </span>

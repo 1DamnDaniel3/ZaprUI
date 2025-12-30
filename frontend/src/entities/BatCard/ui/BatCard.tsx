@@ -1,25 +1,18 @@
-import { useState } from 'react';
 import s from './BatCard.module.scss';
-import { useSelector } from 'react-redux';
-import { selectBatRunning } from '../../../app/model/slice';
-
+import { useState } from 'react';
+import { useBat } from '../../../shared/hooks/useBat';
 import ArrowIcon from '../../../shared/assets/icons/arrow-up.svg?react';
 
+interface BatCardProps {
+    id: number;
+    path: string;
+    isOpen: boolean;
+}
 
-export function BatCard({ id, path, isOpen }: { id: number; path: string; isOpen: boolean }) {
+export function BatCard({ id, path, isOpen }: BatCardProps) {
     const [animate, setAnimate] = useState(false)
 
-    const batRunning = useSelector(selectBatRunning);
-
-    const wrapperStyle = {
-        backgroundColor: batRunning ? 'var(--color-background-primary)' : undefined,
-        boxShadow: batRunning ? 'none' : undefined,
-    }
-
-    const arrowStyle = {
-        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-        transition: 'transform 0.1s ease-in-out',
-    }
+    const { batRunning } = useBat()
 
     const handleClick = () => {
         setAnimate(true);
@@ -27,11 +20,12 @@ export function BatCard({ id, path, isOpen }: { id: number; path: string; isOpen
     }
 
     return (
-        <div className={`${s.batItem} ${animate ? s.animate : ''} ${batRunning ? s.btnRunning : ''}`} 
-        onClick={handleClick} style={wrapperStyle}>
+        <div className={`${s.batItem} ${animate ? s.animate : ''} ${batRunning ? s.btnRunning : ''}`}
+            onClick={handleClick}
+        >
             {path ? <span className={s.batPath}>{path.split('\\').pop()}</span> : 'Выбери файл'}
             {batRunning && <span className={s.running}>работает...</span>}
-            <ArrowIcon className={s.icon} style={arrowStyle} />
+            <ArrowIcon className={`${s.icon} ${batRunning ? s.iconRunning : ''} ${isOpen ? s.iconOpen : ''}`} />
         </div>
     );
 }
