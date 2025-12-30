@@ -1,14 +1,16 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import './App.css';
 import { RunZapret, WindowControls } from './widgets';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ReadFile } from '../wailsjs/go/main/App';
 import { setChosenBat } from './entities/BatCard/model/slice';
-import { setSoundSwitch, setTheme } from './app/model/slice';
+import { selectTheme, setSoundSwitch, setTheme } from './app/model/slice';
+import Snowfall from 'react-snowfall';
 
 function App() {
     const dispatch = useDispatch()
     const [isInitialized, setIsInitialized] = useState(false)
+    const theme = useSelector(selectTheme)
 
     useLayoutEffect(() => {
         // Убираем transition перед установкой темы
@@ -63,6 +65,7 @@ function App() {
 
     return (
         <div id="App">
+            <Snowfall color={theme === 'light' ? '#aaa' : '#ededed'}/>
             <WindowControls />
             <RunZapret />
         </div>
