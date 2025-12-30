@@ -5,7 +5,6 @@ import { useTheme } from './shared/hooks/useTheme';
 import { useAppInitialization } from './shared/hooks/useAppInitialization';
 import { usePreventZoom } from './shared/hooks/usePreventZoom';
 import { useBat } from './shared/hooks/useBat';
-import { useEffect } from 'react';
 
 function App() {
     const { theme } = useTheme()

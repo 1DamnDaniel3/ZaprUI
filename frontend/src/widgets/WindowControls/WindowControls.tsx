@@ -1,5 +1,5 @@
-import { WindowControlButton } from '../../shared/buttons';
 import s from './WindowControls.module.scss';
+import { WindowControlButton } from '../../shared/buttons';
 import { useBat } from '../../shared/hooks/useBat';
 
 export function WindowControls() {

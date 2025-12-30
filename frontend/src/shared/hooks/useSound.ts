@@ -17,9 +17,9 @@ const volumeMap = {
     run: 0.1,
     back: 0.1,
     hover: 0.05,
-    open: 0.2,
+    open: 0.3,
     select: 0.1,
-    close: 0.2,
+    close: 0.3,
     error: 0.2,
 }
 

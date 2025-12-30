@@ -1,7 +1,6 @@
-import { PropsWithChildren, MouseEvent } from 'react';
 import s from './DefaultModal.module.scss';
-import { useSelector } from 'react-redux';
-import { selectBatRunning } from '../../../app/model/slice';
+import { PropsWithChildren, MouseEvent } from 'react';
+import { useBat } from '../../hooks/useBat';
 
 type DefaultModalProps = {
     animate?: boolean;
@@ -13,7 +12,7 @@ export function DefaultModal({
     animate,
     onClick,
 }: PropsWithChildren<DefaultModalProps>) {
-    const batRunning = useSelector(selectBatRunning)
+    const { batRunning } = useBat()
 
     return (
         <div className={`${s.wrapper} ${animate ? s.animate : ''}`} onClick={onClick}>

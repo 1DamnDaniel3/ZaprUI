@@ -2,13 +2,22 @@ import { useDispatch } from 'react-redux';
 import { useState, useLayoutEffect } from 'react';
 import { ReadFile } from '../../../wailsjs/go/main/App';
 import { setChosenBat } from '../../entities/BatCard/model/slice';
-import { setSoundSwitch } from '../../app/model/slice';
+import { setSoundSwitch, setTheme } from '../../app/model/slice';
 
 export const useAppInitialization = () => {
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useLayoutEffect(() => {
+    const initializeTheme = async () => {
+      return ReadFile('themeProperties.json')
+        .then((data) => {
+          if (data.hasOwnProperty('theme')) {
+            dispatch(setTheme(data.theme));
+          }
+        });
+    };
+
     const initializeApp = async () => {
       document.documentElement.classList.add('no-transition');
 
@@ -40,6 +49,7 @@ export const useAppInitialization = () => {
     };
 
     initializeApp();
+    initializeTheme();
   }, [dispatch]);
 
   return { isInitialized };

@@ -8,7 +8,6 @@ import ThemeLight from '../../assets/icons/light-mode.svg?react';
 import ThemeDark from '../../assets/icons/dark-mode.svg?react';
 import { WindowHide, MinimizeWindow } from '../../../../wailsjs/go/main/App';
 import { useState } from 'react';
-
 import { InfoModal } from './InfoModal/InfoModal';
 import { useTheme } from '../../hooks/useTheme';
 import { useBat } from '../../hooks/useBat';
@@ -22,7 +21,7 @@ interface WindowControlButtonProps {
 
 export function WindowControlButton({ type }: WindowControlButtonProps) {
     const { soundState, toggleSound, play } = useSound()
-    const { theme, toggleTheme } = useTheme()
+    const { theme, changeTheme } = useTheme()
     const { batRunning } = useBat()
 
     const [infoOpen, setInfoOpen] = useState<boolean>(false)
@@ -54,27 +53,24 @@ export function WindowControlButton({ type }: WindowControlButtonProps) {
         } else if (type === 'theme') {
             if (theme === 'light') {
                 play('back')
+                changeTheme('dark')
             }
             else {
                 play('select')
+                changeTheme('light')
             }
-            toggleTheme()
         }
-    }
-
-    const iconStyle = {
-        color: batRunning ? 'var(--color-accent)' : undefined,
     }
 
     return (
         <button className={`${s.button}`} onClick={handleClick} onMouseEnter={() => play('hover')}>
-            {type === 'minimize' && <MinimizeIcon className={s.icon} style={iconStyle} />}
-            {type === 'close' && <CloseIcon className={s.icon} style={iconStyle} />}
-            {type === 'info' && <InfoIcon className={s.icon} style={iconStyle} />}
-            {type === 'sound' && soundState && <SoundOn className={s.icon} style={iconStyle} />}
-            {type === 'sound' && !soundState && <SoundOff className={s.icon} style={iconStyle} />}
-            {type === 'theme' && theme === 'dark' && <ThemeDark className={s.icon} style={iconStyle} />}
-            {type === 'theme' && theme === 'light' && <ThemeLight className={s.icon} style={iconStyle} />}
+            {type === 'minimize' && <MinimizeIcon className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'close' && <CloseIcon className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'info' && <InfoIcon className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'sound' && soundState && <SoundOn className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'sound' && !soundState && <SoundOff className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'theme' && theme === 'dark' && <ThemeDark className={`${s.icon} ${batRunning ? s.running : ''}`} />}
+            {type === 'theme' && theme === 'light' && <ThemeLight className={`${s.icon} ${batRunning ? s.running : ''}`} />}
 
             {type === 'info' && infoOpen && <InfoModal animateClose={animateClose} />}
         </button>

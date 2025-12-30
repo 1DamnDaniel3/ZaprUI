@@ -11,15 +11,6 @@ export const useTheme = () => {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
 
-    const initializeTheme = async () => {
-        return ReadFile('themeProperties.json')
-            .then((data) => {
-                if (data.hasOwnProperty('theme')) {
-                    dispatch(setTheme(data.theme));
-                }
-            });
-    };
-
     const changeTheme = (theme: 'dark' | 'light') => {
         dispatch(setTheme(theme))
         document.documentElement.setAttribute('data-theme', theme)
@@ -35,5 +26,5 @@ export const useTheme = () => {
         }
     }
 
-    return { theme, changeTheme, toggleTheme, initializeTheme };
+    return { theme, changeTheme, toggleTheme };
 };

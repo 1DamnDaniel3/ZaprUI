@@ -3,11 +3,7 @@ import { useEffect, useState } from 'react';
 import { DefaultButton } from '../../buttons';
 import { DefaultModal } from '../../modals/DefaultModal/DefaultModal';
 import { CloseWindow, CopyLogsToClipboard, OpenURL } from '../../../../wailsjs/go/main/App';
-import { playSound } from '../../lib/playSound';
-import { useSelector } from 'react-redux';
-import { selectSoundSwitch } from '../../../app/model/slice';
-
-import criticalErrorSound from '../../assets/sounds/windows-xp-critical-stop.mp3'
+import { useSound } from '../../hooks/useSound';
 
 interface BigErrorProps {
     bigError: string;
@@ -17,11 +13,7 @@ interface BigErrorProps {
 export function BigError({ bigError, setBigError }: BigErrorProps) {
     const [isCopyDone, setIsCopyDone] = useState<boolean>(false);
 
-    const soundState = useSelector(selectSoundSwitch)
-
-    function handleOpenUrl(url: string) {
-        OpenURL(url);
-    }
+    const { play } = useSound()
 
     useEffect(() => {
         let timeout = setTimeout(() => setIsCopyDone(false), 3000);
@@ -29,7 +21,7 @@ export function BigError({ bigError, setBigError }: BigErrorProps) {
     }, [isCopyDone])
 
     useEffect(() => {
-        playSound(criticalErrorSound, 0.2, soundState)
+        play('error')
     }, [])
 
     return (
@@ -54,7 +46,7 @@ export function BigError({ bigError, setBigError }: BigErrorProps) {
                 <p>
                     Для скорейшего исправления ошибки, можете отправить логи
                     <br />
-                    <a className={`${s.link}`} onClick={() => handleOpenUrl('https://github.com/1DamnDaniel3/ZaprUI/issues')}>сюда</a>
+                    <a className={`${s.link}`} onClick={() => OpenURL('https://github.com/1DamnDaniel3/ZaprUI/issues')}>сюда</a>
                 </p>
                 <span className={s.ok} onClick={() => CloseWindow()}>ОК</span>
             </div>
