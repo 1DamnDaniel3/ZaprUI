@@ -1,0 +1,36 @@
+@use '../../styles/variables.scss' as *;
+
+.modalDiv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.link {
+    cursor: pointer;
+    color: var(--color-link);
+
+    &:hover {
+        text-decoration: underline;
+        filter: brightness(var(--brightness-hover));
+    }
+}
+
+.error {
+    border-radius: $border-radius-lg;
+    background-color: #ff000022;
+    padding: $spacing-md $spacing-xl;
+}
+
+.ok {
+    margin: 0 0 0 auto;
+    padding: 4px 6px;
+    border-radius: $border-radius-md;
+    transition: $transition-slow;
+
+    &:hover {
+        background-color: var(--color-primary-transparent);
+        transition: $transition-fast;
+    }
+}
