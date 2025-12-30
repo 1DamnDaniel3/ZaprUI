@@ -2,15 +2,14 @@ import s from './RunZapret.module.scss';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FindBats, RunBat, KillBat, OpenURL } from '../../../wailsjs/go/main/App';
 import { BatList } from './ui/BatList/BatList';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectChosenBat, setBatFiles } from '../../entities/BatCard/model/slice';
+import { useDispatch } from 'react-redux';
+import { setBatFiles } from '../../entities/BatCard/model/slice';
 import { RunButton } from '../../shared/buttons';
-import { selectBatRunning, selectSoundSwitch, setBatRunning } from '../../app/model/slice';
+import { setBatRunning } from '../../app/model/slice';
 import { DefaultWarning } from '../../shared';
-import { playSound } from '../../shared/lib/playSound';
-import runSound from '../../shared/assets/sounds/asdasd.mp3'
-import offSound from '../../shared/assets/sounds/asd.mp3'
 import { BigError } from '../../shared/warnings';
+import { useBat } from '../../shared/hooks/useBat';
+import { useSound } from '../../shared/hooks/useSound';
 
 export function RunZapret() {
     interface errorInterface {
@@ -19,13 +18,13 @@ export function RunZapret() {
     }
 
     const dispatch = useDispatch();
-    const batToRun = useSelector(selectChosenBat);
-    const batRunning = useSelector(selectBatRunning);
-    const soundState = useSelector(selectSoundSwitch);
+
+    const { batToRun, batRunning, changeBatRunning } = useBat();
+    const { play } = useSound()
 
     const wasRunningOnChange = useRef(false);
 
-    const [error, setError] = useState<errorInterface | null>(null);
+    const [error, setError] = useState<errorInterface | null>(null); // потом можно в redux запихнуть и runBat() в хук засунуть
     const [bigError, setBigError] = useState<string>('');
     const [batsReady, setBatsReady] = useState<boolean>(false);
 
@@ -38,12 +37,12 @@ export function RunZapret() {
         try {
             if (batRunning) {
                 await KillBat();
-                playSound(offSound, 0.3, soundState)
-                dispatch(setBatRunning(false));
+                play('stop')
+                changeBatRunning(false);
             } else {
                 await RunBat(id);
-                playSound(runSound, 0.1, soundState)
-                dispatch(setBatRunning(true));
+                play('run')
+                changeBatRunning(true);
             }
         } catch {
             setError({ text: 'Ошибка при запуске .bat файла', type: 'error' });

@@ -14,4 +14,8 @@
     }
 
     transition: vars.$transition-extra-very-slow;
+
+    &.running {
+        background-color: var(--color-background-primary);
+    }
 }

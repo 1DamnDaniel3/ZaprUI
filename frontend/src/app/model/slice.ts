@@ -4,7 +4,7 @@ import { WriteFile } from '../../../wailsjs/go/main/App';
 let initialState = {
     batRunning: false,
     soundSwitch: true,
-    theme: 'light'
+    theme: 'light',
 };
 
 const appSlice = createSlice({
