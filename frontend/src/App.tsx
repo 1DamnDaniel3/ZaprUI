@@ -6,9 +6,8 @@ import { useAppInitialization } from "./shared/hooks/useAppInitialization";
 import { usePreventZoom } from "./shared/hooks/usePreventZoom";
 import { useBat } from "./shared/hooks/useBat";
 import { leaves } from "./shared/assets/images";
+import { sakura } from "./shared/assets/images";
 import { useEffect, useState } from "react";
-
-const leavesSrc = leaves;
 
 function App() {
     const { theme } = useTheme();
@@ -30,11 +29,12 @@ function App() {
         snowflakeCount;
 
     if (isSpring) {
-        radius = [0.5, 3.0];
-        snowflakeCount = 100;
+        images = leafImages;
+        radius = [20, 28];
+        snowflakeCount = 32;
     } else if (isSummer) {
-        radius = [0.5, 3.0];
-        snowflakeCount = 100;
+        radius = [32, 40];
+        snowflakeCount = 16;
     } else if (isAutumn) {
         images = leafImages;
         radius = [20, 28];
@@ -45,7 +45,14 @@ function App() {
     }
 
     useEffect(() => {
-        const images = leavesSrc.map((src) => {
+        let particles;
+        if (isSpring) {
+            particles = sakura;
+        } else if (isAutumn) {
+            particles = leaves;
+        }
+        if (!particles) return;
+        const images = particles.map((src) => {
             const img = new Image();
             img.src = src;
             return img;
@@ -59,12 +66,17 @@ function App() {
 
     return (
         <div id="App">
-            <Snowfall
-                color={theme === "light" && !batRunning ? "#aaa" : "#ededed"}
-                images={images}
-                radius={[radius[0], radius[1]]}
-                snowflakeCount={snowflakeCount}
-            />
+            {!isSummer && (
+                <Snowfall
+                    color={
+                        theme === "light" && !batRunning ? "#aaa" : "#ededed"
+                    }
+                    images={images}
+                    radius={[radius[0], radius[1]]}
+                    snowflakeCount={snowflakeCount}
+                />
+            )}
+
             <WindowControls />
             <RunZapret />
         </div>
